@@ -1,11 +1,14 @@
 import { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Flex, useToast } from '@chakra-ui/react';
-import fs from 'fs';
+import axios from 'axios';
+
+// Pages
+import Navbar from './components/Navbar';
 import Map from './pages/Map';
+import Login from './components/Login';
 import About from './pages/About';
 import ErrorPage from './pages/ErrorPage';
-import axios from 'axios';
 
 function App() {
   const toast = useToast();
@@ -47,12 +50,14 @@ function App() {
 
   return (
     <>
+      <Navbar />
       <Routes>
         <Route
           path="/"
           element={
             <Flex h="100vh" direction={{ base: 'column-reverse', md: 'row' }}>
               <Map />
+              Iti
             </Flex>
           }
         />

@@ -57,7 +57,6 @@ function App() {
           element={
             <Flex h="100vh" direction={{ base: 'column-reverse', md: 'row' }}>
               <Map />
-              Iti
             </Flex>
           }
         />

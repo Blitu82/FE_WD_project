@@ -1,7 +1,6 @@
-import Signup from './Signup';
-import { useState, useContext } from 'react';
-import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
-import { ArrowForwardIcon } from '@chakra-ui/icons';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { signup } from '../api/auth.api';
 import imgUrl from '../assets/logo_example.png';
 import {
   Box,
@@ -30,38 +29,47 @@ import {
 
 // From https://chakra-ui.com/docs/components/modal/usage
 
-function Login() {
+function Signup() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
 
+  console.log(email);
+  console.log(password);
+
   // const { storeToken, authenticateUser } = useContext(AuthContext);
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  // const handleSubmit = async e => {
-  //   e.preventDefault();
+  const handleSubmit = async e => {
+    e.preventDefault();
 
-  //   const user = { email, password };
+    const user = { email, password };
 
-  //   try {
-  //     // login responds with the jwt token
-  //     const response = await login(user);
-  //     // console.log(response.data.authToken);
-  //     storeToken(response.data.authToken);
-  //     authenticateUser();
-  //     navigate('/');
-  //   } catch (error) {
-  //     console.log('Error login', error);
-  //     setError(error.response.data.message); // this error message is coming from the backen
-  //   }
-  // };
+    try {
+      await signup(user);
+      navigate('/');
+    } catch (error) {
+      console.log('Error signing up', error);
+      setError(error.response.data.message);
+    }
+  };
 
   // From https://chakra-ui.com/docs/components/editable
   return (
     <>
-      <Button
+      <Link
+        // isExternal
+        color="#0969da"
+        // href="#"
+        onClick={() => {
+          onOpen();
+        }}
+      >
+        Create an account.
+      </Link>
+      {/* <Button
         leftIcon={<ArrowForwardIcon />}
         colorScheme="yellow"
         variant="solid"
@@ -70,7 +78,7 @@ function Login() {
         }}
       >
         Login
-      </Button>
+      </Button> */}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -83,7 +91,7 @@ function Login() {
               fontSize="24px"
               letterSpacing="-0.5px"
             >
-              Login to OnlyMaps
+              Signup to OnlyMaps
             </ModalHeader>
           </VStack>
           <Card
@@ -103,21 +111,13 @@ function Login() {
                     borderColor="#d8dee4"
                     size="sm"
                     borderRadius="6px"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
                   />
                 </FormControl>
                 <FormControl>
                   <HStack justifyContent="space-between">
                     <FormLabel size="sm">Password</FormLabel>
-                    <Button
-                      as="a"
-                      href="#"
-                      variant="link"
-                      size="xs"
-                      color="#0969da"
-                      fontWeight="500"
-                    >
-                      Forgot password?
-                    </Button>
                   </HStack>
                   <Input
                     type="password"
@@ -125,6 +125,8 @@ function Login() {
                     borderColor="#d8dee4"
                     size="sm"
                     borderRadius="6px"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
                   />
                 </FormControl>
                 <Button
@@ -133,21 +135,16 @@ function Login() {
                   size="sm"
                   _hover={{ bg: '#2c974b' }}
                   _active={{ bg: '#298e46' }}
+                  onClick={handleSubmit}
                 >
-                  Log in
+                  Signup
                 </Button>
               </Stack>
             </ModalBody>
           </Card>
           <Box mt="10px">
             <Center>
-              <HStack fontSize="sm" spacing="1">
-                <Text>New to OnlyMaps?</Text>
-                {/* <Link isExternal color="#0969da" href="#">
-                  Create an account.
-                </Link> */}
-                <Signup />
-              </HStack>
+              <HStack fontSize="sm" spacing="1"></HStack>
             </Center>
           </Box>
 
@@ -162,4 +159,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Signup;

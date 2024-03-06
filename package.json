@@ -16,7 +16,7 @@
     "@emotion/styled": "^11.11.0",
     "@mapbox/mapbox-gl-geocoder": "^5.0.2",
     "axios": "^1.6.2",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.4.5",
     "framer-motion": "^10.16.16",
     "geojson": "^0.5.0",
     "mapbox-gl": "^3.0.1",

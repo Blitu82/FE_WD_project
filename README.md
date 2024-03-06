@@ -1,12 +1,11 @@
-# TrekTrackr
+# OnlyMaps
 
 ![TREKTRACKR Logo](https://github.com/Blitu82/TrekTrackr/blob/main/public/trektracker_app.png)
 <br>
 
 ## Description
 
-Travel app that allows users to manage itineraries when visiting new cities.
-<br>
+Map server app that allows users to download bathymetric coverages
 
 ## Data
 

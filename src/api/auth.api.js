@@ -1,7 +1,10 @@
 import axios from 'axios';
 
-const baseURL = `${import.meta.env.BACKEND_URL}/auth`;
-console.log(import.meta.env.BACKEND_URL);
+// this does not work!
+// const baseURL = `${import.meta.env.BACKEND_URL}/auth`;
+// console.log(import.meta.env.BACKEND_URL);
+
+const baseURL = 'http://localhost:5005/auth';
 
 export const signup = user => {
   return axios.post(`${baseURL}/signup`, user);

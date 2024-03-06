@@ -1,6 +1,10 @@
 import React from 'react';
 import {
   Button,
+  Card,
+  CardBody,
+  CardFooter,
+  Divider,
   Drawer,
   DrawerBody,
   DrawerFooter,
@@ -11,6 +15,8 @@ import {
   Icon,
   Input,
   IconButton,
+  Stack,
+  Text,
   useDisclosure,
 } from '@chakra-ui/react';
 import { ArrowRightIcon } from '@chakra-ui/icons';
@@ -44,15 +50,26 @@ function Layers() {
           </DrawerHeader>
 
           <DrawerBody>
-            <Input placeholder="Type here..." />
+            <Card
+              bg="#f6f8fa"
+              variant="outline"
+              borderColor="#d8dee4"
+              mx="10px"
+            >
+              <CardBody>
+                <Stack>
+                  <Text>SomeText</Text>
+                  <Text>Some more text</Text>
+                </Stack>
+              </CardBody>
+              <Divider />
+              <CardFooter>
+                <Button variant="ghost" colorScheme="blue">
+                  Add to cart
+                </Button>
+              </CardFooter>
+            </Card>
           </DrawerBody>
-
-          <DrawerFooter>
-            <Button variant="outline" mr={3} onClick={onClose}>
-              Cancel
-            </Button>
-            <Button colorScheme="blue">Save</Button>
-          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </>

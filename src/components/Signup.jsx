@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signup } from '../api/auth.api';
 import imgUrl from '../assets/logo_example.png';
+import { AuthContext } from '../context/auth.context';
+import { ArrowForwardIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -27,26 +29,21 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-// From https://chakra-ui.com/docs/components/modal/usage
-
-function Signup() {
+function Signup(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
   const [error, setError] = useState(null);
 
-  console.log(email);
-  console.log(password);
-
-  // const { storeToken, authenticateUser } = useContext(AuthContext);
+  const { storeToken, authenticateUser } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
   const handleSubmit = async e => {
     e.preventDefault();
 
+    // Create an object representing the request body
     const user = { email, password };
-
     try {
       await signup(user);
       navigate('/');
@@ -56,20 +53,9 @@ function Signup() {
     }
   };
 
-  // From https://chakra-ui.com/docs/components/editable
   return (
     <>
-      <Link
-        // isExternal
-        color="#0969da"
-        // href="#"
-        onClick={() => {
-          onOpen();
-        }}
-      >
-        Create an account.
-      </Link>
-      {/* <Button
+      <Button
         leftIcon={<ArrowForwardIcon />}
         colorScheme="yellow"
         variant="solid"
@@ -77,8 +63,8 @@ function Signup() {
           onOpen();
         }}
       >
-        Login
-      </Button> */}
+        Signup
+      </Button>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -98,19 +84,20 @@ function Signup() {
             bg="#f6f8fa"
             variant="outline"
             borderColor="#d8dee4"
-            maW="308px"
+            // maW="308px"
             mx="10px"
           >
             <ModalBody>
               <Stack>
                 <FormControl>
-                  <FormLabel size="sm">Username or email address</FormLabel>
+                  <FormLabel size="sm">Email address</FormLabel>
                   <Input
                     type="email"
                     bg="white"
                     borderColor="#d8dee4"
                     size="sm"
                     borderRadius="6px"
+                    placeholder="Email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                   />
@@ -125,6 +112,7 @@ function Signup() {
                     borderColor="#d8dee4"
                     size="sm"
                     borderRadius="6px"
+                    placeholder="Password"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                   />
@@ -139,6 +127,7 @@ function Signup() {
                 >
                   Signup
                 </Button>
+                {error & <Text>{error}</Text>}
               </Stack>
             </ModalBody>
           </Card>

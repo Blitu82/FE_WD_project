@@ -1,6 +1,5 @@
-import Signup from './Signup';
+// import Signup from './Signup';
 import { useState, useContext } from 'react';
-import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { ArrowForwardIcon } from '@chakra-ui/icons';
 import imgUrl from '../assets/logo_example.png';
 import {
@@ -90,7 +89,7 @@ function Login() {
             bg="#f6f8fa"
             variant="outline"
             borderColor="#d8dee4"
-            maW="308px"
+            // maW="308px"
             mx="10px"
           >
             <ModalBody>
@@ -103,6 +102,7 @@ function Login() {
                     borderColor="#d8dee4"
                     size="sm"
                     borderRadius="6px"
+                    placeholder="Email"
                   />
                 </FormControl>
                 <FormControl>
@@ -125,6 +125,7 @@ function Login() {
                     borderColor="#d8dee4"
                     size="sm"
                     borderRadius="6px"
+                    placeholder="Password"
                   />
                 </FormControl>
                 <Button

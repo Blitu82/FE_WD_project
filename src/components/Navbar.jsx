@@ -1,6 +1,15 @@
+import { useContext } from 'react';
+import { AuthContext } from '../context/auth.context';
 import imgUrl from '../assets/logo_example.png';
 import Login from './Login';
+import Signup from './Signup';
 import { NavLink } from 'react-router-dom';
+import { PiShoppingCartSimpleFill } from 'react-icons/pi';
+import { GiHamburgerMenu } from 'react-icons/gi';
+import { LiaCommentSolid } from 'react-icons/lia';
+import { MdLogin, MdLogout } from 'react-icons/md';
+import { RiInformationLine } from 'react-icons/ri';
+import { MoonIcon, SunIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 import {
   Button,
   Flex,
@@ -17,15 +26,10 @@ import {
   Tooltip,
   useDisclosure,
 } from '@chakra-ui/react';
-import { PiShoppingCartSimpleFill } from 'react-icons/pi';
-import { GiHamburgerMenu } from 'react-icons/gi';
-import { LiaCommentSolid } from 'react-icons/lia';
-import { MdLogin, MdLogout } from 'react-icons/md';
-import { RiInformationLine } from 'react-icons/ri';
-import { MoonIcon, SunIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 
 function Navbar() {
   // const { toggleColorMode } = useColorMode();
+  const { isLoggedIn, user } = useContext(AuthContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Flex as="nav" alignItems="center" bg="#222" px="20px" py="16px">
@@ -97,16 +101,8 @@ function Navbar() {
             <MenuItem as={MdLogout}>Log out</MenuItem>
           </MenuList>
         </Menu> */}
-        <Login />
-
-        {/* <IconButton
-          bg="#222"
-          color="white"
-          size="sm"
-          aria-label="Hamburguer"
-          colorScheme="black"
-          as={GiHamburgerMenu}
-        /> */}
+        {isLoggedIn && <Login />}
+        {!isLoggedIn && <Signup />}
       </HStack>
     </Flex>
   );

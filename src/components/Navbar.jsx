@@ -1,8 +1,8 @@
 import { useContext } from 'react';
 import { AuthContext } from '../context/auth.context';
 import imgUrl from '../assets/logo_example.png';
+import Logout from './Logout';
 import Login from './Login';
-import Signup from './Signup';
 import { NavLink } from 'react-router-dom';
 import { PiShoppingCartSimpleFill } from 'react-icons/pi';
 import { GiHamburgerMenu } from 'react-icons/gi';
@@ -101,8 +101,8 @@ function Navbar() {
             <MenuItem as={MdLogout}>Log out</MenuItem>
           </MenuList>
         </Menu> */}
-        {isLoggedIn && <Login />}
-        {!isLoggedIn && <Signup />}
+        {isLoggedIn && <Logout />}
+        {!isLoggedIn && <Login />}
       </HStack>
     </Flex>
   );

@@ -4,6 +4,7 @@ import { signup } from '../api/auth.api';
 import imgUrl from '../assets/logo_example.png';
 import { AuthContext } from '../context/auth.context';
 import { ArrowForwardIcon } from '@chakra-ui/icons';
+import Login from './Login';
 import {
   Box,
   Button,
@@ -26,6 +27,7 @@ import {
   Stack,
   Text,
   useDisclosure,
+  useToast,
   VStack,
 } from '@chakra-ui/react';
 
@@ -34,10 +36,28 @@ function Signup(props) {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState(null);
-
-  const { storeToken, authenticateUser } = useContext(AuthContext);
+  const toast = useToast();
 
   const navigate = useNavigate();
+
+  const signupSucessToast = () => {
+    toast({
+      title: 'You have successfully signed up.',
+      status: 'success',
+      duration: 5000,
+      isClosable: true,
+    });
+  };
+
+  const signupErrorToast = errorMessage => {
+    toast({
+      title: 'Signup Error',
+      description: errorMessage,
+      status: 'error',
+      duration: 5000,
+      isClosable: true,
+    });
+  };
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -46,25 +66,31 @@ function Signup(props) {
     const user = { email, password };
     try {
       await signup(user);
+      signupSucessToast();
+      setEmail('');
+      setPassword('');
       navigate('/');
+      onClose();
     } catch (error) {
       console.log('Error signing up', error);
       setError(error.response.data.message);
+      signupErrorToast(error.response.data.message);
+      setEmail('');
+      setPassword('');
     }
   };
 
   return (
     <>
-      <Button
-        leftIcon={<ArrowForwardIcon />}
-        colorScheme="yellow"
-        variant="solid"
+      <Link
+        color="#0969da"
+        href="#"
         onClick={() => {
           onOpen();
         }}
       >
-        Signup
-      </Button>
+        Create an account
+      </Link>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -133,7 +159,12 @@ function Signup(props) {
           </Card>
           <Box mt="10px">
             <Center>
-              <HStack fontSize="sm" spacing="1"></HStack>
+              <HStack fontSize="sm" spacing="1">
+                {/* <Link isExternal color="#0969da" href="#">
+                  I have an account.
+                </Link> */}
+                <Text color="white">New to OnlyMaps?</Text>
+              </HStack>
             </Center>
           </Box>
 

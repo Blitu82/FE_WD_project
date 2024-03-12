@@ -1,6 +1,9 @@
-// import Signup from './Signup';
+import Signup from './Signup';
 import { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowForwardIcon } from '@chakra-ui/icons';
+import { login } from '../api/auth.api';
+import { AuthContext } from '../context/auth.context';
 import imgUrl from '../assets/logo_example.png';
 import {
   Box,
@@ -24,6 +27,7 @@ import {
   Stack,
   Text,
   useDisclosure,
+  useToast,
   VStack,
 } from '@chakra-ui/react';
 
@@ -34,28 +38,54 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const toast = useToast();
 
-  // const { storeToken, authenticateUser } = useContext(AuthContext);
+  const { storeToken, authenticateUser } = useContext(AuthContext);
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  // const handleSubmit = async e => {
-  //   e.preventDefault();
+  const loginSucessToast = () => {
+    toast({
+      title: 'You are successfully logged in.',
+      status: 'success',
+      duration: 5000,
+      isClosable: true,
+    });
+  };
 
-  //   const user = { email, password };
+  const loginErrorToast = errorMessage => {
+    toast({
+      title: 'Login Error',
+      description: errorMessage,
+      status: 'error',
+      duration: 5000,
+      isClosable: true,
+    });
+  };
 
-  //   try {
-  //     // login responds with the jwt token
-  //     const response = await login(user);
-  //     // console.log(response.data.authToken);
-  //     storeToken(response.data.authToken);
-  //     authenticateUser();
-  //     navigate('/');
-  //   } catch (error) {
-  //     console.log('Error login', error);
-  //     setError(error.response.data.message); // this error message is coming from the backen
-  //   }
-  // };
+  const handleSubmit = async e => {
+    e.preventDefault();
+    const user = { email, password };
+    try {
+      // login responds with the jwt token
+      const response = await login(user);
+      // console.log(response.data.authToken);
+      storeToken(response.data.authToken);
+      authenticateUser();
+      loginSucessToast();
+      navigate('/');
+    } catch (error) {
+      setError(error.response.data.message);
+      // console.log('Error login', error);
+      loginErrorToast(error.response.data.message); // this error message is coming from the backend
+      setEmail('');
+      setPassword('');
+    }
+  };
+
+  const handleCloseModal = () => {
+    onClose();
+  };
 
   // From https://chakra-ui.com/docs/components/editable
   return (
@@ -95,7 +125,7 @@ function Login() {
             <ModalBody>
               <Stack>
                 <FormControl>
-                  <FormLabel size="sm">Username or email address</FormLabel>
+                  <FormLabel size="sm">Email address</FormLabel>
                   <Input
                     type="email"
                     bg="white"
@@ -103,6 +133,8 @@ function Login() {
                     size="sm"
                     borderRadius="6px"
                     placeholder="Email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
                   />
                 </FormControl>
                 <FormControl>
@@ -126,6 +158,8 @@ function Login() {
                     size="sm"
                     borderRadius="6px"
                     placeholder="Password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
                   />
                 </FormControl>
                 <Button
@@ -134,6 +168,7 @@ function Login() {
                   size="sm"
                   _hover={{ bg: '#2c974b' }}
                   _active={{ bg: '#298e46' }}
+                  onClick={handleSubmit}
                 >
                   Log in
                 </Button>
@@ -144,10 +179,7 @@ function Login() {
             <Center>
               <HStack fontSize="sm" spacing="1">
                 <Text>New to OnlyMaps?</Text>
-                {/* <Link isExternal color="#0969da" href="#">
-                  Create an account.
-                </Link> */}
-                <Signup />
+                <Signup onClick={onClose} />
               </HStack>
             </Center>
           </Box>

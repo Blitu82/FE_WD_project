@@ -23,9 +23,12 @@ function Map() {
   const [selectedTileId, setSelectedTileId] = useState(null);
   const [selectedTileName, setSelectedTileName] = useState(null);
   const [selectedTileBoundingBox, setSelectedTileBoundingBox] = useState(null);
+  const [downloadLink, setDownloadLink] = useState(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // console.log(selectedTileId);
-  // console.log(selectedTileName);
+  console.log(selectedTileName);
+  console.log(downloadLink);
   // console.log(selectedTileBoundingBox);
 
   // Helper function used to get the bounding box coordinates of the tiles selected by the user.
@@ -84,6 +87,7 @@ function Map() {
           params: selectedTileBoundingBox,
         });
         const downloadLink = response.data.downloadLink;
+        setDownloadLink(downloadLink);
       } else {
         console.error('Selected tile bounding box is empty.');
       }
@@ -97,6 +101,13 @@ function Map() {
       getDownloadLink(selectedTileBoundingBox);
     }
   }, [selectedTileBoundingBox]);
+
+  // Effect to handle opening the Drawer in the Layer component when a tile is selected
+  useEffect(() => {
+    if (selectedTileId) {
+      setIsDrawerOpen(true);
+    }
+  }, [selectedTileId]);
 
   // This effect initializes and displays the MapBox map
   // including adding controls, layers and handling user interactions.
@@ -241,7 +252,11 @@ function Map() {
         h="100%"
         style={{ overflow: 'auto' }}
       ></Box>
-      <Layers />
+      <Layers
+        downloadLink={downloadLink}
+        selectedTileName={selectedTileName}
+        drawerIsOpen={isDrawerOpen}
+      />
     </>
   );
 }

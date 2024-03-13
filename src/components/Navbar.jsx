@@ -3,12 +3,11 @@ import { AuthContext } from '../context/auth.context';
 import imgUrl from '../assets/logo_example.png';
 import Logout from './Logout';
 import Login from './Login';
+import Feedback from './Feedback';
+import ShoppingCart from './ShoppingCart';
 import { NavLink } from 'react-router-dom';
-import { PiShoppingCartSimpleFill } from 'react-icons/pi';
 import { GiHamburgerMenu } from 'react-icons/gi';
-import { LiaCommentSolid } from 'react-icons/lia';
-import { MdLogin, MdLogout } from 'react-icons/md';
-import { RiInformationLine } from 'react-icons/ri';
+
 import { MoonIcon, SunIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 import {
   Button,
@@ -49,7 +48,7 @@ function Navbar() {
       </HStack>
       <Spacer />
       <HStack spacing="40px">
-        <Tooltip label="Shopping cart" fontSize="md">
+        {/* <Tooltip label="Shopping cart" fontSize="md">
           <span>
             <IconButton
               bg="#222"
@@ -60,19 +59,11 @@ function Navbar() {
               as={PiShoppingCartSimpleFill}
             />
           </span>
-        </Tooltip>
-        <Tooltip label="Feedback" fontSize="md">
-          <span>
-            <IconButton
-              bg="#222"
-              color="white"
-              size="sm"
-              aria-label="Feedback"
-              colorScheme="black"
-              as={LiaCommentSolid}
-            />
-          </span>
-        </Tooltip>
+        </Tooltip> */}
+
+        {isLoggedIn && <ShoppingCart />}
+        {isLoggedIn && <Feedback />}
+
         {/* <Menu isOpen={isOpen}>
           <MenuButton
             bg="#222"

@@ -1,22 +1,15 @@
-import Signup from './Signup';
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowForwardIcon } from '@chakra-ui/icons';
 import { login } from '../api/auth.api';
 import { AuthContext } from '../context/auth.context';
 import imgUrl from '../assets/logo_example.png';
+import { PiShoppingCartSimpleFill } from 'react-icons/pi';
 import {
-  Box,
   Button,
   Card,
-  Center,
-  FormControl,
-  FormLabel,
-  HStack,
+  Checkbox,
   IconButton,
   Image,
-  Input,
-  Link,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -26,6 +19,7 @@ import {
   ModalCloseButton,
   Stack,
   Text,
+  Tooltip,
   useDisclosure,
   useToast,
   VStack,
@@ -33,8 +27,9 @@ import {
 
 // From https://chakra-ui.com/docs/components/modal/usage
 
-function Login() {
+function ShoppingCart() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [shoppingCart, setShoppingCart] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -44,18 +39,18 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const loginSucessToast = () => {
+  const cartSucessToast = () => {
     toast({
-      title: 'You are successfully logged in.',
+      title: 'You are successfully downloaded your data.',
       status: 'success',
       duration: 5000,
       isClosable: true,
     });
   };
 
-  const loginErrorToast = errorMessage => {
+  const cartErrorToast = errorMessage => {
     toast({
-      title: 'Login Error',
+      title: 'Feedback Error',
       description: errorMessage,
       status: 'error',
       duration: 5000,
@@ -72,12 +67,12 @@ function Login() {
       // console.log(response.data.authToken);
       storeToken(response.data.authToken);
       authenticateUser();
-      loginSucessToast();
+      cartSucessToast();
       navigate('/');
     } catch (error) {
       setError(error.response.data.message);
       // console.log('Error login', error);
-      loginErrorToast(error.response.data.message); // this error message is coming from the backend
+      cartErrorToast(error.response.data.message); // this error message is coming from the backend
       setEmail('');
       setPassword('');
     }
@@ -90,16 +85,20 @@ function Login() {
   // From https://chakra-ui.com/docs/components/editable
   return (
     <>
-      <Button
-        leftIcon={<ArrowForwardIcon />}
-        colorScheme="yellow"
-        variant="solid"
-        onClick={() => {
-          onOpen();
-        }}
-      >
-        Login
-      </Button>
+      <Tooltip label="Shopping cart" fontSize="md">
+        <span>
+          <IconButton
+            bg="#222"
+            colorScheme="black"
+            size="sm"
+            aria-label="Shopping Cart"
+            as={PiShoppingCartSimpleFill}
+            onClick={() => {
+              onOpen();
+            }}
+          />
+        </span>
+      </Tooltip>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -112,7 +111,7 @@ function Login() {
               fontSize="24px"
               letterSpacing="-0.5px"
             >
-              Login to OnlyMaps
+              Shopping Cart
             </ModalHeader>
           </VStack>
           <Card
@@ -124,44 +123,12 @@ function Login() {
           >
             <ModalBody>
               <Stack>
-                <FormControl>
-                  <FormLabel size="sm">Email address</FormLabel>
-                  <Input
-                    type="email"
-                    bg="white"
-                    borderColor="#d8dee4"
-                    size="sm"
-                    borderRadius="6px"
-                    placeholder="Email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                  />
-                </FormControl>
-                <FormControl>
-                  <HStack justifyContent="space-between">
-                    <FormLabel size="sm">Password</FormLabel>
-                    <Button
-                      as="a"
-                      href="#"
-                      variant="link"
-                      size="xs"
-                      color="#0969da"
-                      fontWeight="500"
-                    >
-                      Forgot password?
-                    </Button>
-                  </HStack>
-                  <Input
-                    type="password"
-                    bg="white"
-                    borderColor="#d8dee4"
-                    size="sm"
-                    borderRadius="6px"
-                    placeholder="Password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                  />
-                </FormControl>
+                <Checkbox defaultChecked>
+                  <Text>selectedTileName1</Text>
+                </Checkbox>
+                <Checkbox defaultChecked>
+                  <Text>selectedTileName2</Text>
+                </Checkbox>
                 <Button
                   bg="#2da44e"
                   color="white"
@@ -170,19 +137,11 @@ function Login() {
                   _active={{ bg: '#298e46' }}
                   onClick={handleSubmit}
                 >
-                  Log in
+                  Download
                 </Button>
               </Stack>
             </ModalBody>
           </Card>
-          <Box mt="10px">
-            <Center>
-              <HStack fontSize="sm" spacing="1">
-                <Text>New to OnlyMaps?</Text>
-                <Signup />
-              </HStack>
-            </Center>
-          </Box>
 
           <ModalFooter>
             <Button variant="ghost" mr={3} onClick={onClose}>
@@ -195,4 +154,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default ShoppingCart;

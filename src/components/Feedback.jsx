@@ -1,10 +1,10 @@
-import Signup from './Signup';
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowForwardIcon } from '@chakra-ui/icons';
 import { login } from '../api/auth.api';
 import { AuthContext } from '../context/auth.context';
 import imgUrl from '../assets/logo_example.png';
+import { LiaCommentSolid } from 'react-icons/lia';
 import {
   Box,
   Button,
@@ -26,6 +26,7 @@ import {
   ModalCloseButton,
   Stack,
   Text,
+  Tooltip,
   useDisclosure,
   useToast,
   VStack,
@@ -33,8 +34,9 @@ import {
 
 // From https://chakra-ui.com/docs/components/modal/usage
 
-function Login() {
+function Feedback() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [feedback, setFeedback] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -44,18 +46,18 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const loginSucessToast = () => {
+  const feedbackSucessToast = () => {
     toast({
-      title: 'You are successfully logged in.',
+      title: 'You are successfully submitted your feedback.',
       status: 'success',
       duration: 5000,
       isClosable: true,
     });
   };
 
-  const loginErrorToast = errorMessage => {
+  const feedbackErrorToast = errorMessage => {
     toast({
-      title: 'Login Error',
+      title: 'Feedback Error',
       description: errorMessage,
       status: 'error',
       duration: 5000,
@@ -72,12 +74,12 @@ function Login() {
       // console.log(response.data.authToken);
       storeToken(response.data.authToken);
       authenticateUser();
-      loginSucessToast();
+      feedbackSucessToast();
       navigate('/');
     } catch (error) {
       setError(error.response.data.message);
       // console.log('Error login', error);
-      loginErrorToast(error.response.data.message); // this error message is coming from the backend
+      feedbackErrorToast(error.response.data.message); // this error message is coming from the backend
       setEmail('');
       setPassword('');
     }
@@ -90,16 +92,21 @@ function Login() {
   // From https://chakra-ui.com/docs/components/editable
   return (
     <>
-      <Button
-        leftIcon={<ArrowForwardIcon />}
-        colorScheme="yellow"
-        variant="solid"
-        onClick={() => {
-          onOpen();
-        }}
-      >
-        Login
-      </Button>
+      <Tooltip label="Feedback" fontSize="md">
+        <span>
+          <IconButton
+            bg="#222"
+            color="white"
+            size="sm"
+            aria-label="Feedback"
+            colorScheme="black"
+            as={LiaCommentSolid}
+            onClick={() => {
+              onOpen();
+            }}
+          />
+        </span>
+      </Tooltip>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -112,7 +119,7 @@ function Login() {
               fontSize="24px"
               letterSpacing="-0.5px"
             >
-              Login to OnlyMaps
+              User Feedback
             </ModalHeader>
           </VStack>
           <Card
@@ -125,39 +132,63 @@ function Login() {
             <ModalBody>
               <Stack>
                 <FormControl>
-                  <FormLabel size="sm">Email address</FormLabel>
+                  <FormLabel size="sm">Question 1</FormLabel>
                   <Input
                     type="email"
                     bg="white"
                     borderColor="#d8dee4"
                     size="sm"
                     borderRadius="6px"
-                    placeholder="Email"
+                    // placeholder="Email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                   />
                 </FormControl>
                 <FormControl>
-                  <HStack justifyContent="space-between">
-                    <FormLabel size="sm">Password</FormLabel>
-                    <Button
-                      as="a"
-                      href="#"
-                      variant="link"
-                      size="xs"
-                      color="#0969da"
-                      fontWeight="500"
-                    >
-                      Forgot password?
-                    </Button>
-                  </HStack>
+                  <FormLabel size="sm">Question 2</FormLabel>
                   <Input
                     type="password"
                     bg="white"
                     borderColor="#d8dee4"
                     size="sm"
                     borderRadius="6px"
-                    placeholder="Password"
+                    // placeholder="Password"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel size="sm">Question 3</FormLabel>
+                  <Input
+                    type="password"
+                    bg="white"
+                    borderColor="#d8dee4"
+                    size="sm"
+                    borderRadius="6px"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel size="sm">Question 4</FormLabel>
+                  <Input
+                    type="password"
+                    bg="white"
+                    borderColor="#d8dee4"
+                    size="sm"
+                    borderRadius="6px"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel size="sm">Question 5</FormLabel>
+                  <Input
+                    type="password"
+                    bg="white"
+                    borderColor="#d8dee4"
+                    size="sm"
+                    borderRadius="6px"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                   />
@@ -170,19 +201,11 @@ function Login() {
                   _active={{ bg: '#298e46' }}
                   onClick={handleSubmit}
                 >
-                  Log in
+                  Submit
                 </Button>
               </Stack>
             </ModalBody>
           </Card>
-          <Box mt="10px">
-            <Center>
-              <HStack fontSize="sm" spacing="1">
-                <Text>New to OnlyMaps?</Text>
-                <Signup />
-              </HStack>
-            </Center>
-          </Box>
 
           <ModalFooter>
             <Button variant="ghost" mr={3} onClick={onClose}>
@@ -195,4 +218,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Feedback;

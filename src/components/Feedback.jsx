@@ -1,22 +1,20 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowForwardIcon } from '@chakra-ui/icons';
-import { login } from '../api/auth.api';
-import { AuthContext } from '../context/auth.context';
+import { feedback } from '../api/feedback.api';
 import imgUrl from '../assets/logo_example.png';
 import { LiaCommentSolid } from 'react-icons/lia';
+// import { StarIcon } from '@chakra-ui/icons';
 import {
-  Box,
   Button,
   Card,
-  Center,
   FormControl,
   FormLabel,
   HStack,
   IconButton,
   Image,
   Input,
-  Link,
+  InputGroup,
+  InputLeftAddon,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -24,31 +22,31 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  RadioGroup,
+  Radio,
   Stack,
-  Text,
+  Textarea,
   Tooltip,
   useDisclosure,
   useToast,
   VStack,
 } from '@chakra-ui/react';
 
-// From https://chakra-ui.com/docs/components/modal/usage
-
 function Feedback() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [feedback, setFeedback] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [userCategory, setUserCategory] = useState(null);
+  const [userRating, setUserRating] = useState(0);
+  // const [hover, setHover] = useState(null);
+  const [userFeedback, setUserFeedback] = useState('');
+  const [userEmail, setUserEmail] = useState('');
   const [error, setError] = useState(null);
   const toast = useToast();
-
-  const { storeToken, authenticateUser } = useContext(AuthContext);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const navigate = useNavigate();
 
   const feedbackSucessToast = () => {
     toast({
-      title: 'You are successfully submitted your feedback.',
+      title: 'Your feedback has been submitted.',
       status: 'success',
       duration: 5000,
       isClosable: true,
@@ -67,21 +65,24 @@ function Feedback() {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const user = { email, password };
+    const feedbackData = {
+      category: userCategory,
+      rating: userRating,
+      feedback: userFeedback,
+      email: userEmail,
+    };
     try {
-      // login responds with the jwt token
-      const response = await login(user);
-      // console.log(response.data.authToken);
-      storeToken(response.data.authToken);
-      authenticateUser();
+      await feedback(feedbackData);
       feedbackSucessToast();
       navigate('/');
+      handleCloseModal();
+      setUserCategory(null);
+      setUserRating(0);
+      setUserFeedback('');
+      setUserEmail('');
     } catch (error) {
       setError(error.response.data.message);
-      // console.log('Error login', error);
-      feedbackErrorToast(error.response.data.message); // this error message is coming from the backend
-      setEmail('');
-      setPassword('');
+      feedbackErrorToast(error.response.data.message);
     }
   };
 
@@ -89,7 +90,6 @@ function Feedback() {
     onClose();
   };
 
-  // From https://chakra-ui.com/docs/components/editable
   return (
     <>
       <Tooltip label="Feedback" fontSize="md">
@@ -97,9 +97,9 @@ function Feedback() {
           <IconButton
             bg="#222"
             color="white"
+            colorScheme="black"
             size="sm"
             aria-label="Feedback"
-            colorScheme="black"
             as={LiaCommentSolid}
             onClick={() => {
               onOpen();
@@ -107,7 +107,7 @@ function Feedback() {
           />
         </span>
       </Tooltip>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
@@ -122,76 +122,93 @@ function Feedback() {
               User Feedback
             </ModalHeader>
           </VStack>
-          <Card
-            bg="#f6f8fa"
-            variant="outline"
-            borderColor="#d8dee4"
-            // maW="308px"
-            mx="10px"
-          >
+          <Card bg="#f6f8fa" variant="outline" borderColor="#d8dee4" mx="10px">
             <ModalBody>
               <Stack>
-                <FormControl>
-                  <FormLabel size="sm">Question 1</FormLabel>
-                  <Input
-                    type="email"
+                <FormControl isRequired mb="10px">
+                  <FormLabel size="sm">
+                    As a user of this data, how would you categorize yourself?
+                  </FormLabel>
+                  <RadioGroup onChange={setUserCategory} value={userCategory}>
+                    <VStack alignItems="flex-start">
+                      <Radio bg="white" value="General Public">
+                        General Public
+                      </Radio>
+                      <Radio bg="white" value="Academia">
+                        Academia
+                      </Radio>
+                      <Radio bg="white" value="Industry">
+                        Industry
+                      </Radio>
+                      <Radio bg="white" value="Governement">
+                        Government
+                      </Radio>
+                      <Radio bg="white" value="Other">
+                        Other
+                      </Radio>
+                    </VStack>
+                  </RadioGroup>
+                </FormControl>
+
+                <FormControl isRequired mb="10px">
+                  <FormLabel size="sm">
+                    On a scale of 1 to 5, how was your experience accessing the
+                    data?
+                  </FormLabel>
+                  <RadioGroup onChange={setUserRating} value={userRating}>
+                    <HStack>
+                      <Radio bg="white" value="1">
+                        1
+                      </Radio>
+                      <Radio bg="white" value="2">
+                        2
+                      </Radio>
+                      <Radio bg="white" value="3">
+                        3
+                      </Radio>
+                      <Radio bg="white" value="4">
+                        4
+                      </Radio>
+                      <Radio bg="white" value="5">
+                        5
+                      </Radio>
+                    </HStack>
+                  </RadioGroup>
+                </FormControl>
+
+                <FormControl mb="10px">
+                  <FormLabel size="sm">
+                    Explain your rating or share additional comments (max. 1500
+                    characters).
+                  </FormLabel>
+                  <Textarea
                     bg="white"
+                    maxLength="1500"
                     borderColor="#d8dee4"
                     size="sm"
                     borderRadius="6px"
-                    // placeholder="Email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
+                    placeholder="Enter text here"
+                    value={userFeedback}
+                    onChange={e => setUserFeedback(e.target.value)}
                   />
                 </FormControl>
-                <FormControl>
-                  <FormLabel size="sm">Question 2</FormLabel>
-                  <Input
-                    type="password"
-                    bg="white"
-                    borderColor="#d8dee4"
-                    size="sm"
-                    borderRadius="6px"
-                    // placeholder="Password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                  />
-                </FormControl>
-                <FormControl>
-                  <FormLabel size="sm">Question 3</FormLabel>
-                  <Input
-                    type="password"
-                    bg="white"
-                    borderColor="#d8dee4"
-                    size="sm"
-                    borderRadius="6px"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                  />
-                </FormControl>
-                <FormControl>
-                  <FormLabel size="sm">Question 4</FormLabel>
-                  <Input
-                    type="password"
-                    bg="white"
-                    borderColor="#d8dee4"
-                    size="sm"
-                    borderRadius="6px"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                  />
-                </FormControl>
-                <FormControl>
-                  <FormLabel size="sm">Question 5</FormLabel>
-                  <Input
-                    type="password"
-                    bg="white"
-                    borderColor="#d8dee4"
-                    size="sm"
-                    borderRadius="6px"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                  />
+
+                <FormControl mb="10px">
+                  <FormLabel size="sm">
+                    If you provide an email address, we will endeavor to respond
+                    to any specific issues reported.
+                  </FormLabel>
+                  <InputGroup size="sm">
+                    <InputLeftAddon>Email (optional)</InputLeftAddon>
+                    <Input
+                      type="email"
+                      bg="white"
+                      borderColor="#d8dee4"
+                      borderRadius="6px"
+                      value={userEmail}
+                      onChange={e => setUserEmail(e.target.value)}
+                    />
+                  </InputGroup>
                 </FormControl>
                 <Button
                   bg="#2da44e"
@@ -209,7 +226,7 @@ function Feedback() {
 
           <ModalFooter>
             <Button variant="ghost" mr={3} onClick={onClose}>
-              Close
+              Cancel
             </Button>
           </ModalFooter>
         </ModalContent>

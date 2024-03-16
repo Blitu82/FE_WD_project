@@ -19,8 +19,8 @@ function Map() {
   const mapContainer = useRef(null);
   const map = useRef(null);
 
-  const [lng, setLng] = useState(-16.9);
-  const [lat, setLat] = useState(32.63333);
+  const [lng, setLng] = useState(-17.57813);
+  const [lat, setLat] = useState(34.727);
   const [zoom, setZoom] = useState(4.5);
   const [tiles, setTiles] = useState(null);
   const [selectedTileId, setSelectedTileId] = useState(null);
@@ -264,6 +264,7 @@ function Map() {
         downloadLink={downloadLink}
         selectedTileName={selectedTileName}
         drawerIsOpen={isDrawerOpen}
+        mapContainer={mapContainer}
       />
     </>
   );

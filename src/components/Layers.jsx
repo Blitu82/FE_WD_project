@@ -1,6 +1,7 @@
 import React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import {
+  Box,
   Button,
   Card,
   CardBody,
@@ -9,16 +10,13 @@ import {
   Divider,
   Drawer,
   DrawerBody,
-  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
   HStack,
   Icon,
-  Input,
   IconButton,
-  Link,
   Spacer,
   Stack,
   Text,
@@ -29,7 +27,12 @@ import {
 import { ArrowRightIcon, Search2Icon, CloseIcon } from '@chakra-ui/icons';
 import { IoLayers } from 'react-icons/io5';
 
-function Layers({ downloadLink, selectedTileName, drawerIsOpen }) {
+function Layers({
+  downloadLink,
+  selectedTileName,
+  drawerIsOpen,
+  mapContainer,
+}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
   useEffect(() => {
@@ -59,10 +62,16 @@ function Layers({ downloadLink, selectedTileName, drawerIsOpen }) {
         placement="left"
         onClose={onClose}
         finalFocusRef={btnRef}
-        size="xs"
+        size="sm"
+        portalProps={{ containerRef: mapContainer }}
       >
-        <DrawerOverlay />
-        <DrawerContent>
+        <DrawerOverlay h="auto" />
+        <DrawerContent
+          containerProps={{
+            top: '75px',
+          }}
+          style={{ position: 'absolute' }}
+        >
           <DrawerCloseButton />
           <DrawerHeader>
             <HStack>

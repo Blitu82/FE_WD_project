@@ -13,10 +13,8 @@ import {
   FormControl,
   FormLabel,
   HStack,
-  IconButton,
   Image,
   Input,
-  Link,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -30,8 +28,6 @@ import {
   useToast,
   VStack,
 } from '@chakra-ui/react';
-
-// From https://chakra-ui.com/docs/components/modal/usage
 
 function Login() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -63,13 +59,11 @@ function Login() {
     });
   };
 
-  const handleSubmit = async e => {
+  const handleLoginSubmit = async e => {
     e.preventDefault();
     const user = { email, password };
     try {
-      // login responds with the jwt token
       const response = await login(user);
-      // console.log(response.data.authToken);
       storeToken(response.data.authToken);
       authenticateUser();
       loginSucessToast();
@@ -77,7 +71,7 @@ function Login() {
     } catch (error) {
       setError(error.response.data.message);
       // console.log('Error login', error);
-      loginErrorToast(error.response.data.message); // this error message is coming from the backend
+      loginErrorToast(error.response.data.message);
       setEmail('');
       setPassword('');
     }
@@ -168,7 +162,7 @@ function Login() {
                   size="sm"
                   _hover={{ bg: '#2c974b' }}
                   _active={{ bg: '#298e46' }}
-                  onClick={handleSubmit}
+                  onClick={handleLoginSubmit}
                 >
                   Log in
                 </Button>

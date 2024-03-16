@@ -6,30 +6,18 @@ import Login from './Login';
 import Feedback from './Feedback';
 import ShoppingCart from './ShoppingCart';
 import { NavLink } from 'react-router-dom';
-import { GiHamburgerMenu } from 'react-icons/gi';
-
-import { MoonIcon, SunIcon, ArrowForwardIcon } from '@chakra-ui/icons';
 import {
-  Button,
   Flex,
   HStack,
   Heading,
-  IconButton,
   Image,
-  Link,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
   Spacer,
-  Tooltip,
   useDisclosure,
 } from '@chakra-ui/react';
 
 function Navbar() {
-  // const { toggleColorMode } = useColorMode();
-  const { isLoggedIn, user } = useContext(AuthContext);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isLoggedIn } = useContext(AuthContext);
+  // const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Flex as="nav" alignItems="center" bg="#222" px="20px" py="16px">
       <HStack spacing="10px">
@@ -48,50 +36,8 @@ function Navbar() {
       </HStack>
       <Spacer />
       <HStack spacing="40px">
-        {/* <Tooltip label="Shopping cart" fontSize="md">
-          <span>
-            <IconButton
-              bg="#222"
-              // color="white"
-              colorScheme="black"
-              size="sm"
-              aria-label="Shopping Cart"
-              as={PiShoppingCartSimpleFill}
-            />
-          </span>
-        </Tooltip> */}
-
         {isLoggedIn && <ShoppingCart />}
         {isLoggedIn && <Feedback />}
-
-        {/* <Menu isOpen={isOpen}>
-          <MenuButton
-            bg="#222"
-            color="white"
-            icon={IconButton}
-            as={GiHamburgerMenu}
-            aria-label="Options"
-            colorScheme="black"
-            variant="ghost"
-            mx={1}
-            py={[1, 2, 2]}
-            px={4}
-            borderRadius={5}
-            // _hover={{ bg: useColorModeValue('gray.100', 'gray.700') }}
-            fontWeight="normal"
-            onMouseEnter={onOpen}
-            onMouseLeave={onClose}
-          />
-          <MenuList
-            onMouseEnter={onOpen}
-            onMouseLeave={onClose}
-            bg="#222"
-            color="white"
-          >
-            <MenuItem as={RiInformationLine}>About</MenuItem>
-            <MenuItem as={MdLogout}>Log out</MenuItem>
-          </MenuList>
-        </Menu> */}
         {isLoggedIn && <Logout />}
         {!isLoggedIn && <Login />}
       </HStack>

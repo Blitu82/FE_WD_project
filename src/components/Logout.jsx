@@ -1,20 +1,11 @@
-// import Signup from './Signup';
-import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-// import { ArrowForwardIcon } from '@chakra-ui/icons';
-import { login } from '../api/auth.api';
+import { useContext } from 'react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { AuthContext } from '../context/auth.context';
-import { Button, useDisclosure } from '@chakra-ui/react';
-
-// From https://chakra-ui.com/docs/components/modal/usage
+import { Button } from '@chakra-ui/react';
 
 function Logout() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { logoutUser } = useContext(AuthContext);
 
-  const { storeToken, authenticateUser, logoutUser } = useContext(AuthContext);
-
-  // From https://chakra-ui.com/docs/components/editable
   return (
     <>
       <Button

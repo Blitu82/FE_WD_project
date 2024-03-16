@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-// import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import { Box, useColorModeValue } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import axios from 'axios';
 import Layers from '../components/Layers';
+import { useContext } from 'react';
+import { AuthContext } from '../context/auth.context';
 
 // Code based on https://medium.com/@gisjohnecs/part-1-web-mapping-with-mapbox-gl-react-js-7d11b50d86ec
 
@@ -13,12 +14,14 @@ mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_KEY;
 const API_URL = 'http://localhost:5005';
 
 function Map() {
+  const { isLoggedIn } = useContext(AuthContext);
+  const storedToken = localStorage.getItem('authToken');
   const mapContainer = useRef(null);
   const map = useRef(null);
 
   const [lng, setLng] = useState(-16.9);
   const [lat, setLat] = useState(32.63333);
-  const [zoom, setZoom] = useState(5);
+  const [zoom, setZoom] = useState(4.5);
   const [tiles, setTiles] = useState(null);
   const [selectedTileId, setSelectedTileId] = useState(null);
   const [selectedTileName, setSelectedTileName] = useState(null);
@@ -26,10 +29,9 @@ function Map() {
   const [downloadLink, setDownloadLink] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  // console.log(selectedTileId);
   console.log(selectedTileName);
   console.log(downloadLink);
-  // console.log(selectedTileBoundingBox);
+  console.log(storedToken);
 
   // Helper function used to get the bounding box coordinates of the tiles selected by the user.
   function getBoundingBox(geometryArray) {
@@ -55,14 +57,16 @@ function Map() {
   // Async function to get all tiles from the backend API
   async function getTiles() {
     try {
-      const response = await axios.get(`${API_URL}/api/grid`);
+      const response = await axios.get(`${API_URL}/api/grid`, {
+        headers: { Authorization: `Bearer ${storedToken}` },
+      });
       const data = response.data;
       const polygons = data.map(item => ({
         type: 'Feature',
         geometry: item.location,
         properties: {
           id: item._id,
-          name: item.name,
+          name: item.tile,
         },
       }));
       const geoJson = {
@@ -117,6 +121,9 @@ function Map() {
       style: 'mapbox://styles/mapbox/streets-v12',
       center: [lng, lat],
       zoom: zoom,
+      projection: {
+        name: 'mercator',
+      },
     });
 
     // Add navigation control (the +/- zoom buttons)
@@ -173,7 +180,8 @@ function Map() {
       map.current.addSource('wms-layer', {
         type: 'raster',
         tiles: [
-          'http://localhost:8080/geoserver/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.3.0&request=GetMap&crs=EPSG:3857&transparent=true&width=512&height=512&layers=geotiffs', //works!
+          // 'http://localhost:8080/geoserver/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.3.0&request=GetMap&crs=EPSG:3857&transparent=true&width=512&height=512&layers=geotiffs', //works!
+          'http://localhost:8080/geoserver/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.3.0&request=GetMap&crs=EPSG:3857&transparent=true&width=512&height=512&layers=geotiffs', //test
         ],
         tileSize: 512,
       });

@@ -1,10 +1,7 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signup } from '../api/auth.api';
 import imgUrl from '../assets/logo_example.png';
-import { AuthContext } from '../context/auth.context';
-import { ArrowForwardIcon } from '@chakra-ui/icons';
-import Login from './Login';
 import {
   Box,
   Button,
@@ -13,7 +10,6 @@ import {
   FormControl,
   FormLabel,
   HStack,
-  IconButton,
   Image,
   Input,
   Link,
@@ -31,7 +27,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-function Signup(props) {
+function Signup() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -59,9 +55,8 @@ function Signup(props) {
     });
   };
 
-  const handleSubmit = async e => {
+  const handleSignupSubmit = async e => {
     e.preventDefault();
-
     // Create an object representing the request body
     const user = { email, password };
     try {
@@ -149,7 +144,7 @@ function Signup(props) {
                   size="sm"
                   _hover={{ bg: '#2c974b' }}
                   _active={{ bg: '#298e46' }}
-                  onClick={handleSubmit}
+                  onClick={handleSignupSubmit}
                 >
                   Signup
                 </Button>
@@ -160,9 +155,6 @@ function Signup(props) {
           <Box mt="10px">
             <Center>
               <HStack fontSize="sm" spacing="1">
-                {/* <Link isExternal color="#0969da" href="#">
-                  I have an account.
-                </Link> */}
                 <Text color="white">New to OnlyMaps?</Text>
               </HStack>
             </Center>

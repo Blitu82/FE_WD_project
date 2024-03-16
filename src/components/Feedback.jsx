@@ -63,7 +63,7 @@ function Feedback() {
     });
   };
 
-  const handleSubmit = async e => {
+  const handleFeedbackSubmit = async e => {
     e.preventDefault();
     const feedbackData = {
       category: userCategory,
@@ -216,7 +216,7 @@ function Feedback() {
                   size="sm"
                   _hover={{ bg: '#2c974b' }}
                   _active={{ bg: '#298e46' }}
-                  onClick={handleSubmit}
+                  onClick={handleFeedbackSubmit}
                 >
                   Submit
                 </Button>

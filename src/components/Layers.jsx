@@ -37,7 +37,6 @@ function Layers() {
   const btnRef = React.useRef();
   const {
     map,
-    mapContainer,
     lng,
     setLng,
     lat,
@@ -52,13 +51,8 @@ function Layers() {
     setSelectedTileName,
     selectedTileBoundingBox,
     setSelectedTileBoundingBox,
-    downloadLink,
-    setDownloadLink,
     isDrawerOpen,
-    setIsDrawerOpen,
-    getBoundingBox,
-    getTiles,
-    getDownloadLink,
+    addToCart,
   } = useContext(MapContext);
 
   //Helper function that allows zooming to the tile selected by the user
@@ -145,7 +139,10 @@ function Layers() {
               )}
               {isLoggedIn && selectedTileName && (
                 <>
-                  <Button colorScheme="blue">
+                  <Button
+                    colorScheme="blue"
+                    onClick={() => addToCart(selectedTileId)}
+                  >
                     <Icon as={IoLayers} />
                     Add to cart
                   </Button>

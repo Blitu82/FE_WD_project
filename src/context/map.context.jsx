@@ -17,6 +17,9 @@ const MapProviderWrapper = props => {
   const [selectedTileBoundingBox, setSelectedTileBoundingBox] = useState(null);
   const [downloadLink, setDownloadLink] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
+
+  console.log(cartItems);
 
   // Helper function used to get the bounding box coordinates of the tiles selected by the user.
   function getBoundingBox(geometryArray) {
@@ -91,6 +94,73 @@ const MapProviderWrapper = props => {
     }
   }, [selectedTileBoundingBox]);
 
+  // example code from https://dev.to/anne46/cart-functionality-in-react-with-context-api-2k2f
+  // const addToCart = item => {
+  //   const isItemInCart = cartItems.find(cartItem => cartItem.id === item.id);
+
+  //   if (isItemInCart) {
+  //     setCartItems(
+  //       cartItems.map(cartItem =>
+  //         cartItem.id === item.id
+  //           ? { ...cartItem, quantity: cartItem.quantity + 1 }
+  //           : cartItem
+  //       )
+  //     );
+  //   } else {
+  //     setCartItems([...cartItems, { ...item, quantity: 1 }]);
+  //   }
+  // };
+
+  // const removeFromCart = item => {
+  //   const isItemInCart = cartItems.find(cartItem => cartItem.id === item.id);
+
+  //   if (isItemInCart.quantity === 1) {
+  //     setCartItems(cartItems.filter(cartItem => cartItem.id !== item.id));
+  //   } else {
+  //     setCartItems(
+  //       cartItems.map(cartItem =>
+  //         cartItem.id === item.id
+  //           ? { ...cartItem, quantity: cartItem.quantity - 1 }
+  //           : cartItem
+  //       )
+  //     );
+  //   }
+  // };
+
+  // const clearCart = () => {
+  //   setCartItems([]);
+  // };
+
+  // Helper function to add items to the Shopping Cart
+  function addToCart(item) {
+    const isItemInCart = cartItems.find(cartItem => cartItem.item === item);
+    if (isItemInCart) {
+      console.log('entering found branch');
+      setCartItems(
+        cartItems.map(cartItem =>
+          cartItem.item === item
+            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+            : cartItem
+        )
+      );
+    } else {
+      console.log('entering not found branch');
+      setCartItems([...cartItems, { item, quantity: 1 }]);
+    }
+  }
+
+  // Helper function to remove items from the Shopping Cart
+  function removeFromCart(item) {}
+
+  // Helper function to clear the Shopping Cart
+  function clearCart() {
+    console.log('cleared Cart!');
+    setCartItems([]);
+  }
+
+  // Helper function to get the total number of items in the Shopping Cart
+  function getCartTotal() {}
+
   return (
     <MapContext.Provider
       value={{
@@ -117,6 +187,10 @@ const MapProviderWrapper = props => {
         getBoundingBox,
         getTiles,
         getDownloadLink,
+        addToCart,
+        removeFromCart,
+        clearCart,
+        getCartTotal,
       }}
     >
       {props.children}

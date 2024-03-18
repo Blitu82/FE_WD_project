@@ -1,7 +1,5 @@
 import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { login } from '../api/auth.api';
-import { AuthContext } from '../context/auth.context';
+import { MapContext } from '../context/map.context';
 import imgUrl from '../assets/logo_example.png';
 import { PiShoppingCartSimpleFill } from 'react-icons/pi';
 import {
@@ -25,19 +23,24 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-// From https://chakra-ui.com/docs/components/modal/usage
-
 function ShoppingCart() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [shoppingCart, setShoppingCart] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
+  const {
+    selectedTileName,
+    setSelectedTileName,
+    selectedTileBoundingBox,
+    setSelectedTileBoundingBox,
+    downloadLink,
+    setDownloadLink,
+    isDrawerOpen,
+    setIsDrawerOpen,
+    getDownloadLink,
+    cartItems,
+    setCartItems,
+    clearCart,
+  } = useContext(MapContext);
+
   const toast = useToast();
-
-  const { storeToken, authenticateUser } = useContext(AuthContext);
-
-  const navigate = useNavigate();
 
   const cartSucessToast = () => {
     toast({
@@ -58,25 +61,25 @@ function ShoppingCart() {
     });
   };
 
-  const handleSubmit = async e => {
-    e.preventDefault();
-    const user = { email, password };
-    try {
-      // login responds with the jwt token
-      const response = await login(user);
-      // console.log(response.data.authToken);
-      storeToken(response.data.authToken);
-      authenticateUser();
-      cartSucessToast();
-      navigate('/');
-    } catch (error) {
-      setError(error.response.data.message);
-      // console.log('Error login', error);
-      cartErrorToast(error.response.data.message); // this error message is coming from the backend
-      setEmail('');
-      setPassword('');
-    }
-  };
+  // const handleSubmit = async e => {
+  //   e.preventDefault();
+  //   const user = { email, password };
+  //   try {
+  //     // login responds with the jwt token
+  //     const response = await login(user);
+  //     // console.log(response.data.authToken);
+  //     storeToken(response.data.authToken);
+  //     authenticateUser();
+  //     cartSucessToast();
+  //     navigate('/');
+  //   } catch (error) {
+  //     setError(error.response.data.message);
+  //     // console.log('Error login', error);
+  //     cartErrorToast(error.response.data.message); // this error message is coming from the backend
+  //     setEmail('');
+  //     setPassword('');
+  //   }
+  // };
 
   const handleCloseModal = () => {
     onClose();
@@ -129,9 +132,19 @@ function ShoppingCart() {
                   size="sm"
                   _hover={{ bg: '#2c974b' }}
                   _active={{ bg: '#298e46' }}
-                  onClick={handleSubmit}
+                  // onClick={handleSubmit}
                 >
                   Download
+                </Button>
+                <Button
+                  bg="#2da44e"
+                  color="white"
+                  size="sm"
+                  _hover={{ bg: '#2c974b' }}
+                  _active={{ bg: '#298e46' }}
+                  onClick={clearCart}
+                >
+                  Clear Cart
                 </Button>
               </Stack>
             </ModalBody>

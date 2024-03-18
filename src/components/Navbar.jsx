@@ -13,7 +13,7 @@ function Navbar() {
   const { isLoggedIn } = useContext(AuthContext);
 
   const reloadPage = () => {
-    window.location.reload(); // or window.location.href = window.location.href;
+    window.location.reload();
   };
   // const { isOpen, onOpen, onClose } = useDisclosure();
   return (

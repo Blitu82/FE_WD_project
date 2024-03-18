@@ -5,16 +5,18 @@ import './index.css';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ChakraProvider } from '@chakra-ui/react';
 
-// import { ThemeProviderWrapper } from './context/theme.context.jsx';
+import { MapProviderWrapper } from './context/map.context.jsx';
 import { AuthProviderWrapper } from './context/auth.context.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ChakraProvider>
       <Router>
-        <AuthProviderWrapper>
-          <App />
-        </AuthProviderWrapper>
+        <MapProviderWrapper>
+          <AuthProviderWrapper>
+            <App />
+          </AuthProviderWrapper>
+        </MapProviderWrapper>
       </Router>
     </ChakraProvider>
   </React.StrictMode>

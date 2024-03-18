@@ -1,110 +1,43 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useContext } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { Box } from '@chakra-ui/react';
-import axios from 'axios';
+// import axios from 'axios';
 import Layers from '../components/Layers';
-import { useContext } from 'react';
-import { AuthContext } from '../context/auth.context';
+import { MapContext } from '../context/map.context';
 
 // Code based on https://medium.com/@gisjohnecs/part-1-web-mapping-with-mapbox-gl-react-js-7d11b50d86ec
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_KEY;
-const API_URL = 'http://localhost:5005';
 
 function Map() {
-  const { isLoggedIn } = useContext(AuthContext);
-  const storedToken = localStorage.getItem('authToken');
-  const mapContainer = useRef(null);
-  const map = useRef(null);
-
-  const [lng, setLng] = useState(-17.57813);
-  const [lat, setLat] = useState(34.727);
-  const [zoom, setZoom] = useState(4.5);
-  const [tiles, setTiles] = useState(null);
-  const [selectedTileId, setSelectedTileId] = useState(null);
-  const [selectedTileName, setSelectedTileName] = useState(null);
-  const [selectedTileBoundingBox, setSelectedTileBoundingBox] = useState(null);
-  const [downloadLink, setDownloadLink] = useState(null);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  console.log(selectedTileName);
-  console.log(downloadLink);
-  console.log(storedToken);
-
-  // Helper function used to get the bounding box coordinates of the tiles selected by the user.
-  function getBoundingBox(geometryArray) {
-    let minLat = 90;
-    let minLng = 180;
-    let maxLat = -90;
-    let maxLng = -180;
-    for (let i = 0; i < geometryArray.length; i++) {
-      const point = geometryArray[i];
-      minLat = Math.min(minLat, point[1]);
-      minLng = Math.min(minLng, point[0]);
-      maxLat = Math.max(maxLat, point[1]);
-      maxLng = Math.max(maxLng, point[0]);
-    }
-    setSelectedTileBoundingBox({
-      minLat: minLat,
-      minLng: minLng,
-      maxLat: maxLat,
-      maxLng: maxLng,
-    });
-  }
-
-  // Async function to get all tiles from the backend API
-  async function getTiles() {
-    try {
-      const response = await axios.get(`${API_URL}/api/grid`, {
-        headers: { Authorization: `Bearer ${storedToken}` },
-      });
-      const data = response.data;
-      const polygons = data.map(item => ({
-        type: 'Feature',
-        geometry: item.location,
-        properties: {
-          id: item._id,
-          name: item.tile,
-        },
-      }));
-      const geoJson = {
-        type: 'FeatureCollection',
-        features: polygons,
-      };
-      setTiles(geoJson);
-    } catch (error) {
-      console.error('Error getting tiles:', error);
-    }
-  }
-
-  useEffect(() => {
-    getTiles();
-  }, []);
-
-  // Async function to get the coverage download link from GeoServer
-  async function getDownloadLink(selectedTileBoundingBox) {
-    try {
-      if (Object.keys(selectedTileBoundingBox).length > 0) {
-        const response = await axios.get(`${API_URL}/api/download`, {
-          params: selectedTileBoundingBox,
-        });
-        const downloadLink = response.data.downloadLink;
-        setDownloadLink(downloadLink);
-      } else {
-        console.error('Selected tile bounding box is empty.');
-      }
-    } catch (error) {
-      console.error('An error occurred downloading the coverage:', error);
-    }
-  }
-
-  useEffect(() => {
-    if (selectedTileBoundingBox) {
-      getDownloadLink(selectedTileBoundingBox);
-    }
-  }, [selectedTileBoundingBox]);
+  // const storedToken = localStorage.getItem('authToken');
+  const {
+    map,
+    mapContainer,
+    lng,
+    setLng,
+    lat,
+    setLat,
+    zoom,
+    setZoom,
+    tiles,
+    setTiles,
+    selectedTileId,
+    setSelectedTileId,
+    selectedTileName,
+    setSelectedTileName,
+    selectedTileBoundingBox,
+    setSelectedTileBoundingBox,
+    downloadLink,
+    setDownloadLink,
+    isDrawerOpen,
+    setIsDrawerOpen,
+    getBoundingBox,
+    getTiles,
+    getDownloadLink,
+  } = useContext(MapContext);
 
   // Effect to handle opening the Drawer in the Layer component when a tile is selected
   useEffect(() => {
@@ -180,8 +113,7 @@ function Map() {
       map.current.addSource('wms-layer', {
         type: 'raster',
         tiles: [
-          // 'http://localhost:8080/geoserver/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.3.0&request=GetMap&crs=EPSG:3857&transparent=true&width=512&height=512&layers=geotiffs', //works!
-          'http://localhost:8080/geoserver/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.3.0&request=GetMap&crs=EPSG:3857&transparent=true&width=512&height=512&layers=geotiffs', //test
+          'http://localhost:8080/geoserver/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.3.0&request=GetMap&crs=EPSG:3857&transparent=true&width=512&height=512&layers=geotiffs', //works
         ],
         tileSize: 512,
       });
@@ -193,7 +125,7 @@ function Map() {
           source: 'wms-layer',
           paint: {},
         },
-        'tile-fill-layer' // place wms layer under the tiles.
+        'tile-fill-layer' // place WMS layer under the tiles.
       );
     });
 
@@ -260,12 +192,7 @@ function Map() {
         h="100%"
         style={{ overflow: 'auto' }}
       ></Box>
-      <Layers
-        downloadLink={downloadLink}
-        selectedTileName={selectedTileName}
-        drawerIsOpen={isDrawerOpen}
-        mapContainer={mapContainer}
-      />
+      <Layers />
     </>
   );
 }

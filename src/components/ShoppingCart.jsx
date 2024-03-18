@@ -114,13 +114,7 @@ function ShoppingCart() {
               Shopping Cart
             </ModalHeader>
           </VStack>
-          <Card
-            bg="#f6f8fa"
-            variant="outline"
-            borderColor="#d8dee4"
-            // maW="308px"
-            mx="10px"
-          >
+          <Card bg="#f6f8fa" variant="outline" borderColor="#d8dee4" mx="10px">
             <ModalBody>
               <Stack>
                 <Checkbox defaultChecked>

@@ -1,5 +1,6 @@
 import { createContext, useState, useRef, useEffect } from 'react';
 import axios from 'axios';
+import { useToast } from '@chakra-ui/react';
 
 const MapContext = createContext();
 
@@ -17,9 +18,8 @@ const MapProviderWrapper = props => {
   const [selectedTileBoundingBox, setSelectedTileBoundingBox] = useState(null);
   const [downloadLink, setDownloadLink] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [selectedTiles, setSelectedTiles] = useState([]);
   const [cartItems, setCartItems] = useState([]);
-
-  console.log(cartItems);
 
   // Helper function used to get the bounding box coordinates of the tiles selected by the user.
   function getBoundingBox(geometryArray) {
@@ -131,35 +131,50 @@ const MapProviderWrapper = props => {
   //   setCartItems([]);
   // };
 
+  const cartSucessToast = () => {
+    toast({
+      title: 'Added to cart.',
+      status: 'success',
+      duration: 5000,
+      isClosable: true,
+    });
+  };
+  const toast = useToast();
+  const cartErrorToast = () => {
+    toast({
+      title: 'This feature is already in the cart.',
+      status: 'warning',
+      duration: 5000,
+      isClosable: true,
+    });
+  };
+
   // Helper function to add items to the Shopping Cart
-  function addToCart(item) {
-    const isItemInCart = cartItems.find(cartItem => cartItem.item === item);
-    if (isItemInCart) {
-      console.log('entering found branch');
-      setCartItems(
-        cartItems.map(cartItem =>
-          cartItem.item === item
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
-            : cartItem
-        )
-      );
-    } else {
-      console.log('entering not found branch');
-      setCartItems([...cartItems, { item, quantity: 1 }]);
-    }
-  }
+  const addToCart = () => {
+    const selectedItems = selectedTiles.filter(tile => tile.selected);
+    setCartItems(selectedItems);
+    cartSucessToast();
+  };
 
   // Helper function to remove items from the Shopping Cart
-  function removeFromCart(item) {}
-
-  // Helper function to clear the Shopping Cart
-  function clearCart() {
-    console.log('cleared Cart!');
-    setCartItems([]);
+  function removeFromCart(item) {
+    const updatedCartItems = cartItems.map(cartItem =>
+      cartItem.item === item && cartItem.quantity > 1
+        ? { ...cartItem, quantity: cartItem.quantity - 1 }
+        : cartItem
+    );
+    setCartItems(updatedCartItems.filter(cartItem => cartItem.quantity > 0));
   }
 
   // Helper function to get the total number of items in the Shopping Cart
-  function getCartTotal() {}
+  function getCartTotal() {
+    return cartItems.length;
+  }
+
+  // Helper function to clear the Shopping Cart
+  function clearCart() {
+    setCartItems([]);
+  }
 
   return (
     <MapContext.Provider
@@ -191,6 +206,10 @@ const MapProviderWrapper = props => {
         removeFromCart,
         clearCart,
         getCartTotal,
+        selectedTiles,
+        setSelectedTiles,
+        cartItems,
+        setCartItems,
       }}
     >
       {props.children}

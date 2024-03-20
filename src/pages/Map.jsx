@@ -37,14 +37,18 @@ function Map() {
     getBoundingBox,
     getTiles,
     getDownloadLink,
+    selectedTiles,
+    setSelectedTiles,
   } = useContext(MapContext);
+
+  console.log(selectedTiles);
 
   // Effect to handle opening the Drawer in the Layer component when a tile is selected
   useEffect(() => {
-    if (selectedTileId) {
+    if (selectedTiles.length !== 0) {
       setIsDrawerOpen(true);
     }
-  }, [selectedTileId]);
+  }, [selectedTiles]);
 
   // This effect initializes and displays the MapBox map
   // including adding controls, layers and handling user interactions.
@@ -58,6 +62,30 @@ function Map() {
         name: 'mercator',
       },
     });
+
+    ///TEST
+
+    //   const handleMapClick = (e) => {
+    //     // Check if it's a left click (button 0) and if the click is outside the tiles area
+    //     if (e.button === 0 && !isClickInsideTilesArea(e)) {
+    //       setSelectedTiles([]);
+    //     }
+    //   };
+
+    //   const isClickInsideTilesArea = (e) => {
+    //     const tilesLayer = map.current.getLayer('tile-fill-layer');
+    //     const features = map.current.queryRenderedFeatures(e.point, {
+    //       layers: [tilesLayer.id],
+    //     });
+    //     return features.length > 0;
+    //   };
+
+    //   map.on('mousedown', handleMapClick);
+
+    //   return () => map.current.remove();
+    // }, [setSelectedTiles]);
+
+    ////TEST
 
     // Add navigation control (the +/- zoom buttons)
     map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
@@ -93,19 +121,63 @@ function Map() {
         },
       });
 
-      // Handle click event on tiles.
+      // Handle click event on tiles - single click
       // Store selected tile Id, name and bounding box in state variables 'selectedTileId', 'selectedTileName' and 'selectedTileBoundingBox'
+      // map.current.on('click', 'tile-fill-layer', e => {
+      //   const clickedTileId = e.features[0].properties.id; // Get the id of the clicked tile
+      //   const clickedTileName = e.features[0].properties.name; // Get the name of the clicked tile
+      //   const geometryArray = e.features[0].geometry.coordinates[0];
+      //   if (selectedTileId === clickedTileId) {
+      //     setSelectedTileId(null);
+      //     setSelectedTileName(null);
+      //   } else {
+      //     setSelectedTileId(clickedTileId); // Set the selectedTileId state to the clicked tile id
+      //     setSelectedTileName(clickedTileName); // Set the selectedTileId state to the clicked tile name
+      //     getBoundingBox(geometryArray);
+      //   }
+      // });
+
+      // Handle click event on tiles - multiple selection
       map.current.on('click', 'tile-fill-layer', e => {
         const clickedTileId = e.features[0].properties.id; // Get the id of the clicked tile
         const clickedTileName = e.features[0].properties.name; // Get the name of the clicked tile
-        const geometryArray = e.features[0].geometry.coordinates[0];
-        if (selectedTileId === clickedTileId) {
-          setSelectedTileId(null);
-          setSelectedTileName(null);
+        const geometryArray = e.features[0].geometry.coordinates[0]; // Get the geometry of the clicked tile
+
+        // Check if Ctrl key is pressed
+        const isCtrlPressed = e.originalEvent.ctrlKey;
+
+        if (isCtrlPressed) {
+          const existingTileIndex = selectedTiles.findIndex(
+            tile => tile.id === clickedTileId
+          );
+          if (existingTileIndex === -1) {
+            // Add tile to selectedTiles array
+            setSelectedTiles(prevSelectedTiles => [
+              ...prevSelectedTiles,
+              {
+                id: clickedTileId,
+                name: clickedTileName,
+                geom: geometryArray,
+                selected: true,
+              },
+            ]);
+          } else {
+            // Remove tile from selectedTiles array
+            const updatedSelectedTiles = selectedTiles.filter(
+              tile => tile.id !== clickedTileId
+            );
+            setSelectedTiles(updatedSelectedTiles);
+          }
         } else {
-          setSelectedTileId(clickedTileId); // Set the selectedTileId state to the clicked tile id
-          setSelectedTileName(clickedTileName); // Set the selectedTileId state to the clicked tile name
-          getBoundingBox(geometryArray);
+          // If Ctrl key is not pressed, select only the clicked tile
+          setSelectedTiles([
+            {
+              id: clickedTileId,
+              name: clickedTileName,
+              geom: geometryArray,
+              selected: true,
+            },
+          ]);
         }
       });
 
@@ -169,20 +241,22 @@ function Map() {
   // Modify the display properties of the tile selected by the user.
   useEffect(() => {
     if (map.current && tiles) {
+      const selectedTileIds = selectedTiles.map(tile => tile.id);
+
       map.current.setPaintProperty('tile-fill-layer', 'fill-opacity', [
         'case',
-        ['==', ['get', 'id'], selectedTileId],
+        ['in', ['get', 'id'], ['literal', selectedTileIds]],
         0.5,
         0.2,
       ]);
       map.current.setPaintProperty('tile-line-layer', 'line-width', [
         'case',
-        ['==', ['get', 'id'], selectedTileId],
+        ['in', ['get', 'id'], ['literal', selectedTileIds]],
         6,
         2,
       ]);
     }
-  }, [selectedTileId]);
+  }, [selectedTiles]);
 
   return (
     <>

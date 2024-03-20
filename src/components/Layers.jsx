@@ -4,6 +4,7 @@ import {
   Alert,
   AlertIcon,
   AlertTitle,
+  Box,
   Button,
   Card,
   CardBody,
@@ -20,7 +21,6 @@ import {
   Icon,
   IconButton,
   Spacer,
-  Stack,
   Text,
   Tooltip,
   useDisclosure,
@@ -37,14 +37,6 @@ function Layers() {
   const btnRef = React.useRef();
   const {
     map,
-    lng,
-    setLng,
-    lat,
-    setLat,
-    zoom,
-    setZoom,
-    tiles,
-    setTiles,
     selectedTileId,
     setSelectedTileId,
     selectedTileName,
@@ -53,12 +45,27 @@ function Layers() {
     setSelectedTileBoundingBox,
     isDrawerOpen,
     addToCart,
+    selectedTiles,
+    setSelectedTiles,
+    cartItems,
+    setCartItems,
   } = useContext(MapContext);
 
   //Helper function that allows zooming to the tile selected by the user
-  const zoomToFeature = () => {
-    if (selectedTileBoundingBox && map.current) {
-      const { minLng, minLat, maxLng, maxLat } = selectedTileBoundingBox;
+  const zoomToFeature = tileId => {
+    const selectedTile = selectedTiles.find(tile => tile.id === tileId);
+    if (selectedTile && selectedTile.geom && map.current) {
+      let minLat = 90;
+      let minLng = 180;
+      let maxLat = -90;
+      let maxLng = -180;
+      selectedTile.geom.forEach(point => {
+        const [lng, lat] = point;
+        minLat = Math.min(minLat, lat);
+        minLng = Math.min(minLng, lng);
+        maxLat = Math.max(maxLat, lat);
+        maxLng = Math.max(maxLng, lng);
+      });
       map.current.fitBounds(
         [
           [minLng, minLat],
@@ -69,12 +76,16 @@ function Layers() {
     }
   };
 
-  //Helper function that
-  const removeFromList = () => {
-    setSelectedTileId(null);
-    setSelectedTileName(null);
-    setSelectedTileBoundingBox(null);
+  //Helper function that removes a selected tile from the list
+  const removeFromList = tileId => {
+    // Filter out the selected tile from selectedTiles array
+    const updatedSelectedTiles = selectedTiles.filter(
+      tile => tile.id !== tileId
+    );
+    setSelectedTiles(updatedSelectedTiles);
   };
+
+  const drawerContentHeight = selectedTiles.length * 50 + 250;
 
   useEffect(() => {
     if (isDrawerOpen) {
@@ -82,7 +93,22 @@ function Layers() {
     } else {
       onClose();
     }
-  }, [selectedTileName, isDrawerOpen, onOpen, onClose]);
+  }, [selectedTiles, isDrawerOpen, onOpen, onClose]);
+
+  // Function to toggle the selected state of a tile
+  const toggleTileSelection = tileId => {
+    setSelectedTiles(prevSelectedTiles => {
+      return prevSelectedTiles.map(tile => {
+        if (tile.id === tileId) {
+          return {
+            ...tile,
+            selected: !tile.selected, // Toggle the selected property
+          };
+        }
+        return tile;
+      });
+    });
+  };
 
   return (
     <>
@@ -103,14 +129,15 @@ function Layers() {
         onClose={onClose}
         finalFocusRef={btnRef}
         size="sm"
-        // zIndex={0}
       >
         <DrawerOverlay h="auto" />
         <DrawerContent
           containerProps={{
             top: '95px',
             left: '20px',
-            h: '300px',
+            height: `${drawerContentHeight}px`,
+            maxHeight: '100vh',
+            overflowY: 'auto',
           }}
           style={{ position: 'absolute' }}
         >
@@ -131,26 +158,52 @@ function Layers() {
                   <AlertTitle>Log in to download data</AlertTitle>
                 </Alert>
               )}
-              {isLoggedIn && !selectedTileName && (
+              {isLoggedIn && selectedTiles.length === 0 && (
                 <Alert status="warning">
                   <AlertIcon />
                   <AlertTitle>No features selected</AlertTitle>
                 </Alert>
               )}
-              {isLoggedIn && selectedTileName && (
+              {isLoggedIn && selectedTiles.length > 0 && (
                 <>
-                  <Button
-                    colorScheme="blue"
-                    onClick={() => addToCart(selectedTileId)}
-                  >
+                  <Button colorScheme="blue" onClick={addToCart}>
                     <Icon as={IoLayers} />
                     Add to cart
                   </Button>
+                  <Checkbox>Select all / none</Checkbox>
                   <Card bg="#f6f8fa" variant="outline" borderColor="#d8dee4">
                     <CardBody width="100%">
-                      <Stack>
-                        <HStack>
-                          <Checkbox defaultChecked>
+                      {selectedTiles.map(tile => (
+                        <Box key={tile.id} h="auto">
+                          <VStack alignItems="left">
+                            <HStack marginBottom="10px">
+                              <Checkbox
+                                defaultChecked
+                                isChecked={tile.selected}
+                                onChange={() => toggleTileSelection(tile.id)}
+                              >
+                                <Text>{tile.name}</Text>
+                              </Checkbox>
+                              <Spacer />
+                              <Tooltip label="Zoom to feature" fontSize="md">
+                                <IconButton
+                                  colorScheme="blue"
+                                  icon={<Search2Icon />}
+                                  onClick={() => zoomToFeature(tile.id)}
+                                ></IconButton>
+                              </Tooltip>
+                              <Tooltip label="Remove from list" fontSize="md">
+                                <IconButton
+                                  colorScheme="blue"
+                                  icon={<CloseIcon />}
+                                  onClick={() => removeFromList(tile.id)}
+                                ></IconButton>
+                              </Tooltip>
+                            </HStack>
+                          </VStack>
+                        </Box>
+                      ))}
+                      {/* <Checkbox defaultChecked>
                             <Text>{selectedTileName}</Text>
                           </Checkbox>
                           <Spacer />
@@ -167,9 +220,7 @@ function Layers() {
                               icon={<CloseIcon />}
                               onClick={removeFromList}
                             ></IconButton>
-                          </Tooltip>
-                        </HStack>
-                      </Stack>
+                          </Tooltip> */}
                     </CardBody>
                     <CardFooter></CardFooter>
                   </Card>

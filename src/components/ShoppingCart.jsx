@@ -2,10 +2,18 @@ import { useState, useContext } from 'react';
 import { MapContext } from '../context/map.context';
 import imgUrl from '../assets/logo_example.png';
 import { PiShoppingCartSimpleFill } from 'react-icons/pi';
+import { DeleteIcon } from '@chakra-ui/icons';
 import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  Badge,
+  Box,
   Button,
   Card,
+  CardBody,
   Checkbox,
+  HStack,
   IconButton,
   Image,
   Modal,
@@ -15,6 +23,7 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  Spacer,
   Stack,
   Text,
   Tooltip,
@@ -38,22 +47,23 @@ function ShoppingCart() {
     cartItems,
     setCartItems,
     clearCart,
+    getCartTotal,
+    removeFromCard,
+    addToCart,
   } = useContext(MapContext);
 
-  const toast = useToast();
-
-  const cartSucessToast = () => {
+  const downloadSucessToast = () => {
     toast({
-      title: 'You are successfully downloaded your data.',
+      title: 'Your feedback has been submitted.',
       status: 'success',
       duration: 5000,
       isClosable: true,
     });
   };
 
-  const cartErrorToast = errorMessage => {
+  const downloadErrorToast = errorMessage => {
     toast({
-      title: 'Feedback Error',
+      title: 'Download Error',
       description: errorMessage,
       status: 'error',
       duration: 5000,
@@ -90,16 +100,33 @@ function ShoppingCart() {
     <>
       <Tooltip label="Shopping cart" fontSize="md">
         <span>
-          <IconButton
-            bg="#222"
-            colorScheme="black"
-            size="sm"
-            aria-label="Shopping Cart"
-            as={PiShoppingCartSimpleFill}
-            onClick={() => {
-              onOpen();
-            }}
-          />
+          <Box>
+            <VStack>
+              <Badge
+                color="white"
+                variant="solid"
+                bgColor="#222"
+                borderRadius="full"
+                fontSize="xs"
+                marginBottom="-3"
+                zIndex={1}
+              >
+                {getCartTotal()}
+              </Badge>
+              <IconButton
+                bg="#222"
+                colorScheme="black"
+                size="sm"
+                aria-label="Shopping Cart"
+                marginTop="-1"
+                zIndex={0}
+                as={PiShoppingCartSimpleFill}
+                onClick={() => {
+                  onOpen();
+                }}
+              />
+            </VStack>
+          </Box>
         </span>
       </Tooltip>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -117,43 +144,80 @@ function ShoppingCart() {
               Shopping Cart
             </ModalHeader>
           </VStack>
-          <Card bg="#f6f8fa" variant="outline" borderColor="#d8dee4" mx="10px">
-            <ModalBody>
-              <Stack>
-                <Checkbox defaultChecked>
-                  <Text>selectedTileName1</Text>
-                </Checkbox>
-                <Checkbox defaultChecked>
-                  <Text>selectedTileName2</Text>
-                </Checkbox>
-                <Button
-                  bg="#2da44e"
-                  color="white"
-                  size="sm"
-                  _hover={{ bg: '#2c974b' }}
-                  _active={{ bg: '#298e46' }}
-                  // onClick={handleSubmit}
+          <ModalBody>
+            {cartItems.length > 0 && (
+              <>
+                <Text marginBottom="10px">
+                  Review the products selected for download:
+                </Text>
+                <Card
+                  bg="#f6f8fa"
+                  variant="outline"
+                  borderColor="#d8dee4"
+                  mx="10px"
                 >
-                  Download
-                </Button>
-                <Button
-                  bg="#2da44e"
-                  color="white"
-                  size="sm"
-                  _hover={{ bg: '#2c974b' }}
-                  _active={{ bg: '#298e46' }}
-                  onClick={clearCart}
-                >
-                  Clear Cart
-                </Button>
-              </Stack>
-            </ModalBody>
-          </Card>
+                  <CardBody width="100%">
+                    {/* <ModalBody> */}
+                    {cartItems.map(item => (
+                      <>
+                        <Box key={item.id} h="auto">
+                          <VStack alignItems="left">
+                            <HStack marginBottom="10px">
+                              <Checkbox
+                                defaultChecked
+                                isChecked={item.selected}
+                              >
+                                <Text>{item.name}</Text>
+                              </Checkbox>
+                              <Spacer />
+                              <Tooltip label="Remove from cart" fontSize="md">
+                                <IconButton
+                                  colorScheme="blue"
+                                  icon={<DeleteIcon />}
+                                  size="sm"
+                                  // onClick={() => zoomToFeature(tile.id)}
+                                ></IconButton>
+                              </Tooltip>
+                            </HStack>
+                          </VStack>
+                        </Box>
+                      </>
+                    ))}
+                  </CardBody>
+                </Card>
+              </>
+            )}
+            {cartItems.length === 0 && (
+              <Alert status="warning">
+                <AlertIcon />
+                <AlertTitle>No features selected</AlertTitle>
+              </Alert>
+            )}
+          </ModalBody>
 
           <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={onClose}>
-              Close
-            </Button>
+            <HStack>
+              <Button variant="ghost" size="sm" onClick={onClose}>
+                Cancel
+              </Button>
+              {cartItems.length > 0 && (
+                <>
+                  <Button variant="ghost" size="sm" onClick={clearCart}>
+                    Clear Cart
+                  </Button>
+                  <Button
+                    bg="#2da44e"
+                    color="white"
+                    size="sm"
+                    _hover={{ bg: '#2c974b' }}
+                    _active={{ bg: '#298e46' }}
+                    // onClick={handleSubmit}
+                  >
+                    Download
+                  </Button>
+                </>
+              )}
+            </HStack>
           </ModalFooter>
         </ModalContent>
       </Modal>

@@ -12,7 +12,7 @@ import ErrorPage from './pages/ErrorPage';
 
 function App() {
   const toast = useToast();
-  const API_URL = 'http://localhost:5050/api';
+  const API_URL = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
   // const createTiles = async ({ name, location, imgUrl }) => {
   //   try {

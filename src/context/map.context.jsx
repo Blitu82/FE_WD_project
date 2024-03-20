@@ -5,7 +5,8 @@ import { useToast } from '@chakra-ui/react';
 const MapContext = createContext();
 
 const MapProviderWrapper = props => {
-  const API_URL = 'http://localhost:5005';
+  const API_URL = import.meta.env.VITE_BACKEND_URL;
+  // const API_URL = 'http://localhost:5005';
   const storedToken = localStorage.getItem('authToken');
   const mapContainer = useRef(null);
   const map = useRef(null);

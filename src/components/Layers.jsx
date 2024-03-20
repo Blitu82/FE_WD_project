@@ -95,17 +95,29 @@ function Layers() {
     }
   }, [selectedTiles, isDrawerOpen, onOpen, onClose]);
 
-  // Function to toggle the selected state of a tile
+  // Helper function to toggle the selected state of a tile
   const toggleTileSelection = tileId => {
     setSelectedTiles(prevSelectedTiles => {
       return prevSelectedTiles.map(tile => {
         if (tile.id === tileId) {
           return {
             ...tile,
-            selected: !tile.selected, // Toggle the selected property
+            selected: !tile.selected,
           };
         }
         return tile;
+      });
+    });
+  };
+
+  // Helper function to select all / none tiles
+  const selectAllNone = () => {
+    setSelectedTiles(prevSelectedTiles => {
+      return prevSelectedTiles.map(tile => {
+        return {
+          ...tile,
+          selected: !tile.selected,
+        };
       });
     });
   };
@@ -170,7 +182,9 @@ function Layers() {
                     <Icon as={IoLayers} />
                     Add to cart
                   </Button>
-                  <Checkbox>Select all / none</Checkbox>
+                  <Checkbox onChange={selectAllNone}>
+                    Select all / none
+                  </Checkbox>
                   <Card bg="#f6f8fa" variant="outline" borderColor="#d8dee4">
                     <CardBody width="100%">
                       {selectedTiles.map(tile => (

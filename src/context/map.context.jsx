@@ -6,7 +6,6 @@ const MapContext = createContext();
 
 const MapProviderWrapper = props => {
   const API_URL = import.meta.env.VITE_BACKEND_URL;
-  // const API_URL = 'http://localhost:5005';
   const storedToken = localStorage.getItem('authToken');
   const mapContainer = useRef(null);
   const map = useRef(null);
@@ -159,12 +158,9 @@ const MapProviderWrapper = props => {
 
   // Helper function to remove items from the Shopping Cart
   function removeFromCart(item) {
-    const updatedCartItems = cartItems.map(cartItem =>
-      cartItem.item === item && cartItem.quantity > 1
-        ? { ...cartItem, quantity: cartItem.quantity - 1 }
-        : cartItem
-    );
-    setCartItems(updatedCartItems.filter(cartItem => cartItem.quantity > 0));
+    const updatedCartItems = cartItems.filter(cartItem => cartItem.id !== item);
+    console.log('updated Cart items', updatedCartItems);
+    setCartItems(updatedCartItems);
   }
 
   // Helper function to get the total number of items in the Shopping Cart
@@ -203,14 +199,14 @@ const MapProviderWrapper = props => {
         getBoundingBox,
         getTiles,
         getDownloadLink,
-        addToCart,
-        removeFromCart,
-        clearCart,
-        getCartTotal,
         selectedTiles,
         setSelectedTiles,
         cartItems,
         setCartItems,
+        addToCart,
+        removeFromCart,
+        clearCart,
+        getCartTotal,
       }}
     >
       {props.children}

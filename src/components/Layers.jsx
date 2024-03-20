@@ -203,24 +203,6 @@ function Layers() {
                           </VStack>
                         </Box>
                       ))}
-                      {/* <Checkbox defaultChecked>
-                            <Text>{selectedTileName}</Text>
-                          </Checkbox>
-                          <Spacer />
-                          <Tooltip label="Zoom to feature" fontSize="md">
-                            <IconButton
-                              colorScheme="blue"
-                              icon={<Search2Icon />}
-                              onClick={zoomToFeature}
-                            ></IconButton>
-                          </Tooltip>
-                          <Tooltip label="Remove from list" fontSize="md">
-                            <IconButton
-                              colorScheme="blue"
-                              icon={<CloseIcon />}
-                              onClick={removeFromList}
-                            ></IconButton>
-                          </Tooltip> */}
                     </CardBody>
                     <CardFooter></CardFooter>
                   </Card>

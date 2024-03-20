@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useContext } from 'react';
 import { MapContext } from '../context/map.context';
 import imgUrl from '../assets/logo_example.png';
 import { PiShoppingCartSimpleFill } from 'react-icons/pi';
@@ -48,7 +48,7 @@ function ShoppingCart() {
     setCartItems,
     clearCart,
     getCartTotal,
-    removeFromCard,
+    removeFromCart,
     addToCart,
   } = useContext(MapContext);
 
@@ -158,30 +158,25 @@ function ShoppingCart() {
                 >
                   <CardBody width="100%">
                     {/* <ModalBody> */}
-                    {cartItems.map(item => (
-                      <>
-                        <Box key={item.id} h="auto">
-                          <VStack alignItems="left">
-                            <HStack marginBottom="10px">
-                              <Checkbox
-                                defaultChecked
-                                isChecked={item.selected}
-                              >
-                                <Text>{item.name}</Text>
-                              </Checkbox>
-                              <Spacer />
-                              <Tooltip label="Remove from cart" fontSize="md">
-                                <IconButton
-                                  colorScheme="blue"
-                                  icon={<DeleteIcon />}
-                                  size="sm"
-                                  // onClick={() => zoomToFeature(tile.id)}
-                                ></IconButton>
-                              </Tooltip>
-                            </HStack>
-                          </VStack>
-                        </Box>
-                      </>
+                    {cartItems.map(tile => (
+                      <Box key={tile.id} h="auto">
+                        <VStack alignItems="left">
+                          <HStack marginBottom="10px">
+                            <Checkbox defaultChecked isChecked={tile.selected}>
+                              <Text>{tile.name}</Text>
+                            </Checkbox>
+                            <Spacer />
+                            <Tooltip label="Remove from cart" fontSize="md">
+                              <IconButton
+                                colorScheme="blue"
+                                icon={<DeleteIcon />}
+                                size="sm"
+                                onClick={() => removeFromCart(tile.id)}
+                              ></IconButton>
+                            </Tooltip>
+                          </HStack>
+                        </VStack>
+                      </Box>
                     ))}
                   </CardBody>
                 </Card>

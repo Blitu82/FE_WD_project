@@ -182,7 +182,7 @@ function Layers() {
                     <Icon as={IoLayers} />
                     Add to cart
                   </Button>
-                  <Checkbox onChange={selectAllNone}>
+                  <Checkbox defaultChecked onChange={selectAllNone}>
                     Select all / none
                   </Checkbox>
                   <Card bg="#f6f8fa" variant="outline" borderColor="#d8dee4">

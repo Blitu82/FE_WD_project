@@ -11,11 +11,10 @@ import { Flex, HStack, Heading, Image, Spacer } from '@chakra-ui/react';
 
 function Navbar() {
   const { isLoggedIn } = useContext(AuthContext);
-
   const reloadPage = () => {
     window.location.reload();
   };
-  // const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <Flex as="nav" alignItems="center" bg="#222" px="20px" py="16px">
       <HStack spacing="10px">

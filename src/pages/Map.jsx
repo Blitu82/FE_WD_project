@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { Box } from '@chakra-ui/react';
-// import axios from 'axios';
 import Layers from '../components/Layers';
 import { MapContext } from '../context/map.context';
 
@@ -40,8 +39,6 @@ function Map() {
     selectedTiles,
     setSelectedTiles,
   } = useContext(MapContext);
-
-  console.log(selectedTiles);
 
   // Effect to handle opening the Drawer in the Layer component when a tile is selected
   useEffect(() => {

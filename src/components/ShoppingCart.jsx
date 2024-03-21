@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { MapContext } from '../context/map.context';
 import imgUrl from '../assets/logo_example.png';
 import { PiShoppingCartSimpleFill } from 'react-icons/pi';
@@ -24,7 +24,6 @@ import {
   ModalBody,
   ModalCloseButton,
   Spacer,
-  Stack,
   Text,
   Tooltip,
   useDisclosure,
@@ -43,18 +42,20 @@ function ShoppingCart() {
     setDownloadLink,
     isDrawerOpen,
     setIsDrawerOpen,
-    getDownloadLink,
     cartItems,
     setCartItems,
     clearCart,
     getCartTotal,
     removeFromCart,
-    addToCart,
+    getBoundingBox,
+    getDownloadLink,
   } = useContext(MapContext);
+  const [error, setError] = useState(null);
+  const toast = useToast();
 
   const downloadSucessToast = () => {
     toast({
-      title: 'Your feedback has been submitted.',
+      title: 'The products have been downloaded.',
       status: 'success',
       duration: 5000,
       isClosable: true,
@@ -71,31 +72,32 @@ function ShoppingCart() {
     });
   };
 
-  // const handleSubmit = async e => {
-  //   e.preventDefault();
-  //   const user = { email, password };
-  //   try {
-  //     // login responds with the jwt token
-  //     const response = await login(user);
-  //     // console.log(response.data.authToken);
-  //     storeToken(response.data.authToken);
-  //     authenticateUser();
-  //     cartSucessToast();
-  //     navigate('/');
-  //   } catch (error) {
-  //     setError(error.response.data.message);
-  //     // console.log('Error login', error);
-  //     cartErrorToast(error.response.data.message); // this error message is coming from the backend
-  //     setEmail('');
-  //     setPassword('');
-  //   }
-  // };
+  const handleDownload = async e => {
+    e.preventDefault();
+    try {
+      for (const item of cartItems) {
+        if (item.geom) {
+          await getBoundingBox(item.geom);
+          await getDownloadLink(selectedTileBoundingBox);
+        }
+      }
+      downloadSucessToast();
+      handleCloseModal();
+      clearCart();
+    } catch (error) {
+      setError(
+        error.response?.data?.message || 'An error occurred while downloading.'
+      );
+      downloadErrorToast(
+        error.response?.data?.message || 'An error occurred while downloading.'
+      );
+    }
+  };
 
   const handleCloseModal = () => {
     onClose();
   };
 
-  // From https://chakra-ui.com/docs/components/editable
   return (
     <>
       <Tooltip label="Shopping cart" fontSize="md">
@@ -206,7 +208,7 @@ function ShoppingCart() {
                     size="sm"
                     _hover={{ bg: '#2c974b' }}
                     _active={{ bg: '#298e46' }}
-                    // onClick={handleSubmit}
+                    onClick={handleDownload}
                   >
                     Download
                   </Button>

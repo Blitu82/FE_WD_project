@@ -71,15 +71,27 @@ const MapProviderWrapper = props => {
     getTiles();
   }, []);
 
+  // Helper function to automatically trigger the download of the products.
+  const triggerDownloadLink = downloadLink => {
+    const anchor = document.createElement('a');
+    anchor.href = downloadLink;
+    anchor.download = '';
+    anchor.click();
+  };
+
   // Async function to get the coverage download link from GeoServer
   async function getDownloadLink(selectedTileBoundingBox) {
     try {
-      if (Object.keys(selectedTileBoundingBox).length > 0) {
+      if (
+        selectedTileBoundingBox &&
+        Object.keys(selectedTileBoundingBox).length > 0
+      ) {
         const response = await axios.get(`${API_URL}/api/download`, {
           params: selectedTileBoundingBox,
         });
         const downloadLink = response.data.downloadLink;
         setDownloadLink(downloadLink);
+        triggerDownloadLink(downloadLink);
       } else {
         console.error('Selected tile bounding box is empty.');
       }
@@ -93,43 +105,6 @@ const MapProviderWrapper = props => {
       getDownloadLink(selectedTileBoundingBox);
     }
   }, [selectedTileBoundingBox]);
-
-  // example code from https://dev.to/anne46/cart-functionality-in-react-with-context-api-2k2f
-  // const addToCart = item => {
-  //   const isItemInCart = cartItems.find(cartItem => cartItem.id === item.id);
-
-  //   if (isItemInCart) {
-  //     setCartItems(
-  //       cartItems.map(cartItem =>
-  //         cartItem.id === item.id
-  //           ? { ...cartItem, quantity: cartItem.quantity + 1 }
-  //           : cartItem
-  //       )
-  //     );
-  //   } else {
-  //     setCartItems([...cartItems, { ...item, quantity: 1 }]);
-  //   }
-  // };
-
-  // const removeFromCart = item => {
-  //   const isItemInCart = cartItems.find(cartItem => cartItem.id === item.id);
-
-  //   if (isItemInCart.quantity === 1) {
-  //     setCartItems(cartItems.filter(cartItem => cartItem.id !== item.id));
-  //   } else {
-  //     setCartItems(
-  //       cartItems.map(cartItem =>
-  //         cartItem.id === item.id
-  //           ? { ...cartItem, quantity: cartItem.quantity - 1 }
-  //           : cartItem
-  //       )
-  //     );
-  //   }
-  // };
-
-  // const clearCart = () => {
-  //   setCartItems([]);
-  // };
 
   const cartSucessToast = () => {
     toast({
@@ -171,6 +146,9 @@ const MapProviderWrapper = props => {
   // Helper function to clear the Shopping Cart
   function clearCart() {
     setCartItems([]);
+    setSelectedTileName(null);
+    setSelectedTileBoundingBox(null);
+    setDownloadLink(null);
   }
 
   return (

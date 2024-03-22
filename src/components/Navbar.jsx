@@ -1,13 +1,13 @@
 import { useContext } from 'react';
 import { AuthContext } from '../context/auth.context';
 import imgUrl from '../assets/logo_example.png';
+import { NavLink } from 'react-router-dom';
+import { Flex, HStack, Heading, Image, Spacer } from '@chakra-ui/react';
 import Logout from './Logout';
 import Login from './Login';
 import Feedback from './Feedback';
 import ShoppingCart from './ShoppingCart';
 import About from './About';
-import { NavLink } from 'react-router-dom';
-import { Flex, HStack, Heading, Image, Spacer } from '@chakra-ui/react';
 
 function Navbar() {
   const { isLoggedIn } = useContext(AuthContext);
@@ -16,7 +16,14 @@ function Navbar() {
   };
 
   return (
-    <Flex as="nav" alignItems="center" bg="#222" px="20px" py="16px">
+    <Flex
+      as="nav"
+      alignItems="center"
+      justifyContent="space-between"
+      bg="#222"
+      px="20px"
+      py="16px"
+    >
       <HStack spacing="10px">
         <NavLink to="/" onClick={reloadPage}>
           <Image

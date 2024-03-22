@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { feedback } from '../api/feedback.api';
-import imgUrl from '../assets/logo_example.png';
 import { LiaCommentSolid } from 'react-icons/lia';
 // import { StarIcon } from '@chakra-ui/icons';
 import {
@@ -10,21 +9,21 @@ import {
   FormControl,
   FormLabel,
   HStack,
+  Icon,
   IconButton,
-  Image,
   Input,
   InputGroup,
   InputLeftAddon,
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
   ModalFooter,
   ModalBody,
   ModalCloseButton,
   RadioGroup,
   Radio,
   Stack,
+  Text,
   Textarea,
   Tooltip,
   useDisclosure,
@@ -35,13 +34,11 @@ import {
 function Feedback() {
   const [userCategory, setUserCategory] = useState(null);
   const [userRating, setUserRating] = useState(0);
-  // const [hover, setHover] = useState(null);
   const [userFeedback, setUserFeedback] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [error, setError] = useState(null);
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
   const navigate = useNavigate();
 
   const feedbackSucessToast = () => {
@@ -63,8 +60,18 @@ function Feedback() {
     });
   };
 
+  const isValidEmail = email => {
+    const emailRegex = /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/;
+    return email === '' || emailRegex.test(email);
+  };
+
   const handleFeedbackSubmit = async e => {
     e.preventDefault();
+    if (userEmail && !isValidEmail(userEmail)) {
+      setError('Please enter a valid email address.');
+      feedbackErrorToast(error);
+      return;
+    }
     const feedbackData = {
       category: userCategory,
       rating: userRating,
@@ -111,17 +118,12 @@ function Feedback() {
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
-          <VStack as="header" spacing="0.1" mt="8">
-            <Image boxSize="40px" src={imgUrl} alt="logo"></Image>
-            <ModalHeader
-              as="h1"
-              fontWeight="300"
-              fontSize="24px"
-              letterSpacing="-0.5px"
-            >
+          <HStack as="header" justifyContent="center" m="8" spacing="5">
+            <Icon as={LiaCommentSolid} boxSize="36px"></Icon>
+            <Text as="h1" fontSize="24px">
               User Feedback
-            </ModalHeader>
-          </VStack>
+            </Text>
+          </HStack>
           <Card bg="#f6f8fa" variant="outline" borderColor="#d8dee4" mx="10px">
             <ModalBody>
               <Stack>

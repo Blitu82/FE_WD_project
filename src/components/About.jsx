@@ -1,23 +1,23 @@
-import imgUrl from '../assets/logo_example.png';
 import { RiInformationFill } from 'react-icons/ri';
 import {
   Button,
   Card,
   FormControl,
   FormLabel,
+  HStack,
+  Icon,
   IconButton,
-  Image,
+  Link,
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
   ModalFooter,
   ModalBody,
   ModalCloseButton,
   Stack,
+  Text,
   Tooltip,
   useDisclosure,
-  VStack,
 } from '@chakra-ui/react';
 
 function About() {
@@ -43,22 +43,36 @@ function About() {
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
-          <VStack as="header" spacing="0.1" mt="8">
-            <Image boxSize="40px" src={imgUrl} alt="logo"></Image>
-            <ModalHeader
-              as="h1"
-              fontWeight="300"
-              fontSize="24px"
-              letterSpacing="-0.5px"
-            >
+          <HStack as="header" justifyContent="center" m="8" spacing="5">
+            <Icon as={RiInformationFill} boxSize="36px"></Icon>
+            <Text as="h1" fontSize="24px">
               About
-            </ModalHeader>
-          </VStack>
+            </Text>
+          </HStack>
           <Card bg="#f6f8fa" variant="outline" borderColor="#d8dee4" mx="10px">
             <ModalBody>
               <Stack>
                 <FormControl mb="10px">
                   <FormLabel size="sm">About this data:</FormLabel>
+                  <Text borderColor="#d8dee4" size="sm" borderRadius="6px">
+                    A OnlyMaps Package is a ZIP file containing a collection of
+                    GEBCO datasets to ease the download of large amounts of high
+                    resolution data. The OnlyMaps products are for
+                    non-navigational use only. For more information regarding
+                    these products, please refer to the GEBCO Data Portal. Click
+                    here to access:
+                    <Text>
+                      <Link
+                        href="https://www.gebco.net/data_and_products/gridded_bathymetry_data/"
+                        isExternal
+                      >
+                        https://www.gebco.net/data_and_products/gridded_bathymetry_data/
+                      </Link>
+                    </Text>
+                    <Text>
+                      OnlyMaps database was last updated: March 5th, 2024
+                    </Text>
+                  </Text>
                 </FormControl>
               </Stack>
             </ModalBody>

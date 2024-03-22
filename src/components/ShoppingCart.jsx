@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState } from 'react';
 import { MapContext } from '../context/map.context';
 import imgUrl from '../assets/logo_example.png';
 import { PiShoppingCartSimpleFill } from 'react-icons/pi';
@@ -13,9 +13,9 @@ import {
   Card,
   CardBody,
   Checkbox,
+  Divider,
   HStack,
   IconButton,
-  Image,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -29,30 +29,22 @@ import {
   useDisclosure,
   useToast,
   VStack,
+  Icon,
 } from '@chakra-ui/react';
 
 function ShoppingCart() {
+  const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
-    selectedTileName,
-    setSelectedTileName,
-    selectedTileBoundingBox,
-    setSelectedTileBoundingBox,
-    downloadLink,
-    setDownloadLink,
-    isDrawerOpen,
-    setIsDrawerOpen,
     cartItems,
-    setCartItems,
     clearCart,
     getCartTotal,
     removeFromCart,
-    getBoundingBox,
     getDownloadLink,
   } = useContext(MapContext);
   const [error, setError] = useState(null);
-  const toast = useToast();
 
+  // Helper functions to display sucess / error toasts after downloading the data.
   const downloadSucessToast = () => {
     toast({
       title: 'The products have been downloaded.',
@@ -72,13 +64,18 @@ function ShoppingCart() {
     });
   };
 
+  const handleCloseModal = () => {
+    onClose();
+  };
+
+  // Helper function used to download
+
   const handleDownload = async e => {
     e.preventDefault();
     try {
       for (const item of cartItems) {
-        if (item.geom) {
-          await getBoundingBox(item.geom);
-          await getDownloadLink(selectedTileBoundingBox);
+        if (item.bbox) {
+          await getDownloadLink(item.bbox);
         }
       }
       downloadSucessToast();
@@ -94,15 +91,11 @@ function ShoppingCart() {
     }
   };
 
-  const handleCloseModal = () => {
-    onClose();
-  };
-
   return (
     <>
       <Tooltip label="Shopping cart" fontSize="md">
         <span>
-          <Box>
+          <Box position="relative">
             <VStack>
               <Badge
                 color="white"
@@ -112,6 +105,8 @@ function ShoppingCart() {
                 fontSize="xs"
                 marginBottom="-3"
                 zIndex={1}
+                position="absolute"
+                top="-15px"
               >
                 {getCartTotal()}
               </Badge>
@@ -135,53 +130,48 @@ function ShoppingCart() {
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
-          <VStack as="header" spacing="0.1" mt="8">
-            <Image boxSize="40px" src={imgUrl} alt="logo"></Image>
-            <ModalHeader
-              as="h1"
-              fontWeight="300"
-              fontSize="24px"
-              letterSpacing="-0.5px"
-            >
+          <HStack as="header" justifyContent="center" m="8" spacing="5">
+            <Icon as={PiShoppingCartSimpleFill} boxSize="36px"></Icon>
+            <Text as="h1" fontSize="24px">
               Shopping Cart
-            </ModalHeader>
-          </VStack>
+            </Text>
+          </HStack>
+          <Divider />
           <ModalBody>
             {cartItems.length > 0 && (
               <>
-                <Text marginBottom="10px">
-                  Review the products selected for download:
-                </Text>
-                <Card
-                  bg="#f6f8fa"
-                  variant="outline"
-                  borderColor="#d8dee4"
-                  mx="10px"
-                >
-                  <CardBody width="100%">
-                    {/* <ModalBody> */}
-                    {cartItems.map(tile => (
-                      <Box key={tile.id} h="auto">
-                        <VStack alignItems="left">
-                          <HStack marginBottom="10px">
-                            <Checkbox defaultChecked isChecked={tile.selected}>
-                              <Text>{tile.name}</Text>
-                            </Checkbox>
-                            <Spacer />
-                            <Tooltip label="Remove from cart" fontSize="md">
-                              <IconButton
-                                colorScheme="blue"
-                                icon={<DeleteIcon />}
-                                size="sm"
-                                onClick={() => removeFromCart(tile.id)}
-                              ></IconButton>
-                            </Tooltip>
-                          </HStack>
-                        </VStack>
-                      </Box>
-                    ))}
-                  </CardBody>
-                </Card>
+                <VStack align="left">
+                  <Text marginBottom="10px">
+                    Review the products selected for download:
+                  </Text>
+                  <Card bg="#f6f8fa" variant="outline" borderColor="#d8dee4">
+                    <CardBody width="100%">
+                      {cartItems.map(tile => (
+                        <Box key={tile.id} h="auto">
+                          <VStack alignItems="left">
+                            <HStack marginBottom="10px">
+                              <Checkbox
+                                defaultChecked
+                                isChecked={tile.selected}
+                              >
+                                <Text>{tile.name}</Text>
+                              </Checkbox>
+                              <Spacer />
+                              <Tooltip label="Remove from cart" fontSize="sm">
+                                <IconButton
+                                  colorScheme="blue"
+                                  icon={<DeleteIcon />}
+                                  size="sm"
+                                  onClick={() => removeFromCart(tile.id)}
+                                ></IconButton>
+                              </Tooltip>
+                            </HStack>
+                          </VStack>
+                        </Box>
+                      ))}
+                    </CardBody>
+                  </Card>
+                </VStack>
               </>
             )}
             {cartItems.length === 0 && (

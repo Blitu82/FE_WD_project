@@ -4,6 +4,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { Box } from '@chakra-ui/react';
 import Layers from '../components/Layers';
+import QuickTips from '../components/QuickTips';
 import { MapContext } from '../context/map.context';
 
 // Code based on https://medium.com/@gisjohnecs/part-1-web-mapping-with-mapbox-gl-react-js-7d11b50d86ec
@@ -16,26 +17,11 @@ function Map() {
     map,
     mapContainer,
     lng,
-    setLng,
     lat,
-    setLat,
     zoom,
-    setZoom,
     tiles,
-    setTiles,
-    selectedTileId,
-    setSelectedTileId,
-    selectedTileName,
-    setSelectedTileName,
-    selectedTileBoundingBox,
-    setSelectedTileBoundingBox,
-    downloadLink,
-    setDownloadLink,
-    isDrawerOpen,
     setIsDrawerOpen,
     getBoundingBox,
-    getTiles,
-    getDownloadLink,
     selectedTiles,
     setSelectedTiles,
   } = useContext(MapContext);
@@ -132,30 +118,33 @@ function Map() {
             tile => tile.id === clickedTileId
           );
           if (existingTileIndex === -1) {
-            // Add tile to selectedTiles array
+            // Add tile to selectedTiles array with Bounding Box attribute
+            const bbox = getBoundingBox(geometryArray);
             setSelectedTiles(prevSelectedTiles => [
               ...prevSelectedTiles,
               {
                 id: clickedTileId,
                 name: clickedTileName,
                 geom: geometryArray,
+                bbox: bbox,
                 selected: true,
               },
             ]);
           } else {
             // Remove tile from selectedTiles array
-            const updatedSelectedTiles = selectedTiles.filter(
-              tile => tile.id !== clickedTileId
-            );
+            const updatedSelectedTiles = [...selectedTiles];
+            updatedSelectedTiles.splice(existingTileIndex, 1);
             setSelectedTiles(updatedSelectedTiles);
           }
         } else {
           // If Ctrl key is not pressed, select only the clicked tile
+          const bbox = getBoundingBox(geometryArray);
           setSelectedTiles([
             {
               id: clickedTileId,
               name: clickedTileName,
               geom: geometryArray,
+              bbox: bbox,
               selected: true,
             },
           ]);
@@ -248,6 +237,7 @@ function Map() {
         style={{ overflow: 'auto' }}
       ></Box>
       <Layers />
+      <QuickTips />
     </>
   );
 }

@@ -27,6 +27,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { ArrowRightIcon, Search2Icon, CloseIcon } from '@chakra-ui/icons';
+import { PiShoppingCartSimpleFill } from 'react-icons/pi';
 import { IoLayers } from 'react-icons/io5';
 import { MapContext } from '../context/map.context';
 import { AuthContext } from '../context/auth.context';
@@ -35,21 +36,8 @@ function Layers() {
   const { isLoggedIn } = useContext(AuthContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
-  const {
-    map,
-    selectedTileId,
-    setSelectedTileId,
-    selectedTileName,
-    setSelectedTileName,
-    selectedTileBoundingBox,
-    setSelectedTileBoundingBox,
-    isDrawerOpen,
-    addToCart,
-    selectedTiles,
-    setSelectedTiles,
-    cartItems,
-    setCartItems,
-  } = useContext(MapContext);
+  const { map, isDrawerOpen, addToCart, selectedTiles, setSelectedTiles } =
+    useContext(MapContext);
 
   //Helper function that allows zooming to the tile selected by the user
   const zoomToFeature = tileId => {
@@ -78,22 +66,11 @@ function Layers() {
 
   //Helper function that removes a selected tile from the list
   const removeFromList = tileId => {
-    // Filter out the selected tile from selectedTiles array
     const updatedSelectedTiles = selectedTiles.filter(
       tile => tile.id !== tileId
     );
     setSelectedTiles(updatedSelectedTiles);
   };
-
-  const drawerContentHeight = selectedTiles.length * 50 + 250;
-
-  useEffect(() => {
-    if (isDrawerOpen) {
-      onOpen();
-    } else {
-      onClose();
-    }
-  }, [selectedTiles, isDrawerOpen, onOpen, onClose]);
 
   // Helper function to toggle the selected state of a tile
   const toggleTileSelection = tileId => {
@@ -121,6 +98,17 @@ function Layers() {
       });
     });
   };
+
+  // Variable used to change the size of the Layers drawer dynamically
+  const drawerContentHeight = selectedTiles.length * 50 + 250;
+
+  useEffect(() => {
+    if (isDrawerOpen) {
+      onOpen();
+    } else {
+      onClose();
+    }
+  }, [selectedTiles, isDrawerOpen, onOpen, onClose]);
 
   return (
     <>
@@ -160,7 +148,7 @@ function Layers() {
               <Text fontSize="xxl">Layers</Text>
             </HStack>
           </DrawerHeader>
-          <Divider color="red" />
+          <Divider />
 
           <DrawerBody>
             <VStack align="stretch">
@@ -178,8 +166,12 @@ function Layers() {
               )}
               {isLoggedIn && selectedTiles.length > 0 && (
                 <>
-                  <Button colorScheme="blue" onClick={addToCart}>
-                    <Icon as={IoLayers} />
+                  <Button
+                    colorScheme="blue"
+                    onClick={addToCart}
+                    leftIcon={<Icon as={PiShoppingCartSimpleFill} />}
+                    rounded="none"
+                  >
                     Add to cart
                   </Button>
                   <Checkbox defaultChecked onChange={selectAllNone}>
@@ -199,18 +191,20 @@ function Layers() {
                                 <Text>{tile.name}</Text>
                               </Checkbox>
                               <Spacer />
-                              <Tooltip label="Zoom to feature" fontSize="md">
+                              <Tooltip label="Zoom to feature" fontSize="sm">
                                 <IconButton
                                   colorScheme="blue"
                                   icon={<Search2Icon />}
                                   onClick={() => zoomToFeature(tile.id)}
+                                  size="sm"
                                 ></IconButton>
                               </Tooltip>
-                              <Tooltip label="Remove from list" fontSize="md">
+                              <Tooltip label="Remove from list" fontSize="sm">
                                 <IconButton
                                   colorScheme="blue"
                                   icon={<CloseIcon />}
                                   onClick={() => removeFromList(tile.id)}
+                                  size="sm"
                                 ></IconButton>
                               </Tooltip>
                             </HStack>

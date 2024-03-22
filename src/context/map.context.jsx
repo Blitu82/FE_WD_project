@@ -13,17 +13,12 @@ const MapProviderWrapper = props => {
   const [lat, setLat] = useState(34.727);
   const [zoom, setZoom] = useState(4.5);
   const [tiles, setTiles] = useState(null);
-  const [selectedTileId, setSelectedTileId] = useState(null);
-  const [selectedTileName, setSelectedTileName] = useState(null);
   const [selectedTileBoundingBox, setSelectedTileBoundingBox] = useState(null);
   const [downloadLink, setDownloadLink] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedTiles, setSelectedTiles] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   const toast = useToast();
-
-  console.log('selectedTiles', selectedTiles);
-  console.log('cartItems', cartItems);
 
   const cartSucessToast = () => {
     toast({
@@ -64,12 +59,11 @@ const MapProviderWrapper = props => {
   // Helper function to clear the Shopping Cart
   function clearCart() {
     setCartItems([]);
-    setSelectedTileName(null);
-    setSelectedTileBoundingBox(null);
     setDownloadLink(null);
   }
 
   // Helper function used to get the bounding box coordinates of the tiles selected by the user.
+
   function getBoundingBox(geometryArray) {
     let minLat = 90;
     let minLng = 180;
@@ -82,12 +76,12 @@ const MapProviderWrapper = props => {
       maxLat = Math.max(maxLat, point[1]);
       maxLng = Math.max(maxLng, point[0]);
     }
-    setSelectedTileBoundingBox({
+    return {
       minLat: minLat,
       minLng: minLng,
       maxLat: maxLat,
       maxLng: maxLng,
-    });
+    };
   }
 
   // Async function to get all tiles from the backend API.
@@ -128,14 +122,11 @@ const MapProviderWrapper = props => {
   };
 
   // Async function to get the coverage download link from GeoServer
-  async function getDownloadLink(selectedTileBoundingBox) {
+  async function getDownloadLink(bbox) {
     try {
-      if (
-        selectedTileBoundingBox &&
-        Object.keys(selectedTileBoundingBox).length > 0
-      ) {
+      if (bbox && Object.keys(bbox).length > 0) {
         const response = await axios.get(`${API_URL}/api/download`, {
-          params: selectedTileBoundingBox,
+          params: bbox,
         });
         const downloadLink = response.data.downloadLink;
         setDownloadLink(downloadLink);
@@ -148,11 +139,11 @@ const MapProviderWrapper = props => {
     }
   }
 
-  useEffect(() => {
-    if (selectedTileBoundingBox) {
-      getDownloadLink(selectedTileBoundingBox);
-    }
-  }, [selectedTileBoundingBox]);
+  // useEffect(() => {
+  //   if (selectedTileBoundingBox) {
+  //     getDownloadLink(selectedTileBoundingBox);
+  //   }
+  // }, [selectedTileBoundingBox]);
 
   return (
     <MapContext.Provider
@@ -167,12 +158,6 @@ const MapProviderWrapper = props => {
         setZoom,
         tiles,
         setTiles,
-        selectedTileId,
-        setSelectedTileId,
-        selectedTileName,
-        setSelectedTileName,
-        selectedTileBoundingBox,
-        setSelectedTileBoundingBox,
         downloadLink,
         setDownloadLink,
         isDrawerOpen,

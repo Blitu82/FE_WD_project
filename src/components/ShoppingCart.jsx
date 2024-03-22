@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { MapContext } from '../context/map.context';
 import imgUrl from '../assets/logo_example.png';
 import { PiShoppingCartSimpleFill } from 'react-icons/pi';

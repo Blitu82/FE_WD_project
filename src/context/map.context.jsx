@@ -20,6 +20,54 @@ const MapProviderWrapper = props => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedTiles, setSelectedTiles] = useState([]);
   const [cartItems, setCartItems] = useState([]);
+  const toast = useToast();
+
+  console.log('selectedTiles', selectedTiles);
+  console.log('cartItems', cartItems);
+
+  const cartSucessToast = () => {
+    toast({
+      title: 'Added to cart.',
+      status: 'success',
+      duration: 5000,
+      isClosable: true,
+    });
+  };
+
+  const cartErrorToast = () => {
+    toast({
+      title: 'This feature is already in the cart.',
+      status: 'warning',
+      duration: 5000,
+      isClosable: true,
+    });
+  };
+
+  // Helper function to add items to the Shopping Cart
+  const addToCart = () => {
+    const selectedItems = selectedTiles.filter(tile => tile.selected);
+    setCartItems(selectedItems);
+    cartSucessToast();
+  };
+
+  // Helper function to remove items from the Shopping Cart
+  function removeFromCart(item) {
+    const updatedCartItems = cartItems.filter(cartItem => cartItem.id !== item);
+    setCartItems(updatedCartItems);
+  }
+
+  // Helper function to get the total number of items in the Shopping Cart
+  function getCartTotal() {
+    return cartItems.length;
+  }
+
+  // Helper function to clear the Shopping Cart
+  function clearCart() {
+    setCartItems([]);
+    setSelectedTileName(null);
+    setSelectedTileBoundingBox(null);
+    setDownloadLink(null);
+  }
 
   // Helper function used to get the bounding box coordinates of the tiles selected by the user.
   function getBoundingBox(geometryArray) {
@@ -42,7 +90,7 @@ const MapProviderWrapper = props => {
     });
   }
 
-  // Async function to get all tiles from the backend API
+  // Async function to get all tiles from the backend API.
   async function getTiles() {
     try {
       const response = await axios.get(`${API_URL}/api/grid`, {
@@ -105,51 +153,6 @@ const MapProviderWrapper = props => {
       getDownloadLink(selectedTileBoundingBox);
     }
   }, [selectedTileBoundingBox]);
-
-  const cartSucessToast = () => {
-    toast({
-      title: 'Added to cart.',
-      status: 'success',
-      duration: 5000,
-      isClosable: true,
-    });
-  };
-  const toast = useToast();
-  const cartErrorToast = () => {
-    toast({
-      title: 'This feature is already in the cart.',
-      status: 'warning',
-      duration: 5000,
-      isClosable: true,
-    });
-  };
-
-  // Helper function to add items to the Shopping Cart
-  const addToCart = () => {
-    const selectedItems = selectedTiles.filter(tile => tile.selected);
-    setCartItems(selectedItems);
-    cartSucessToast();
-  };
-
-  // Helper function to remove items from the Shopping Cart
-  function removeFromCart(item) {
-    const updatedCartItems = cartItems.filter(cartItem => cartItem.id !== item);
-    console.log('updated Cart items', updatedCartItems);
-    setCartItems(updatedCartItems);
-  }
-
-  // Helper function to get the total number of items in the Shopping Cart
-  function getCartTotal() {
-    return cartItems.length;
-  }
-
-  // Helper function to clear the Shopping Cart
-  function clearCart() {
-    setCartItems([]);
-    setSelectedTileName(null);
-    setSelectedTileBoundingBox(null);
-    setDownloadLink(null);
-  }
 
   return (
     <MapContext.Provider

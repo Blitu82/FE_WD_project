@@ -118,22 +118,6 @@ function Map() {
         },
       });
 
-      // Handle click event on tiles - single click
-      // Store selected tile Id, name and bounding box in state variables 'selectedTileId', 'selectedTileName' and 'selectedTileBoundingBox'
-      // map.current.on('click', 'tile-fill-layer', e => {
-      //   const clickedTileId = e.features[0].properties.id; // Get the id of the clicked tile
-      //   const clickedTileName = e.features[0].properties.name; // Get the name of the clicked tile
-      //   const geometryArray = e.features[0].geometry.coordinates[0];
-      //   if (selectedTileId === clickedTileId) {
-      //     setSelectedTileId(null);
-      //     setSelectedTileName(null);
-      //   } else {
-      //     setSelectedTileId(clickedTileId); // Set the selectedTileId state to the clicked tile id
-      //     setSelectedTileName(clickedTileName); // Set the selectedTileId state to the clicked tile name
-      //     getBoundingBox(geometryArray);
-      //   }
-      // });
-
       // Handle click event on tiles - multiple selection
       map.current.on('click', 'tile-fill-layer', e => {
         const clickedTileId = e.features[0].properties.id; // Get the id of the clicked tile

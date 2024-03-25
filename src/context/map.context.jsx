@@ -17,6 +17,7 @@ const MapProviderWrapper = props => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedTiles, setSelectedTiles] = useState([]);
   const [cartItems, setCartItems] = useState([]);
+  const [isDownloading, setIsDownloading] = useState(false);
   const toast = useToast();
 
   const cartSucessToast = () => {
@@ -172,6 +173,8 @@ const MapProviderWrapper = props => {
         removeFromCart,
         clearCart,
         getCartTotal,
+        isDownloading,
+        setIsDownloading,
       }}
     >
       {props.children}

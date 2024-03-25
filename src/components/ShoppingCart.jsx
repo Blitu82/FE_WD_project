@@ -1,6 +1,5 @@
 import { useContext, useState } from 'react';
 import { MapContext } from '../context/map.context';
-import imgUrl from '../assets/logo_example.png';
 import { PiShoppingCartSimpleFill } from 'react-icons/pi';
 import { DeleteIcon } from '@chakra-ui/icons';
 import {
@@ -19,7 +18,6 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
   ModalFooter,
   ModalBody,
   ModalCloseButton,
@@ -41,6 +39,8 @@ function ShoppingCart() {
     getCartTotal,
     removeFromCart,
     getDownloadLink,
+    isDownloading,
+    setIsDownloading,
   } = useContext(MapContext);
   const [error, setError] = useState(null);
 
@@ -72,6 +72,7 @@ function ShoppingCart() {
 
   const handleDownload = async e => {
     e.preventDefault();
+    setIsDownloading(true);
     try {
       for (const item of cartItems) {
         if (item.bbox) {
@@ -88,6 +89,8 @@ function ShoppingCart() {
       downloadErrorToast(
         error.response?.data?.message || 'An error occurred while downloading.'
       );
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -198,6 +201,8 @@ function ShoppingCart() {
                     size="sm"
                     _hover={{ bg: '#2c974b' }}
                     _active={{ bg: '#298e46' }}
+                    isLoading={isDownloading}
+                    loadingText="Downloading"
                     onClick={handleDownload}
                   >
                     Download

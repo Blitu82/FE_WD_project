@@ -152,7 +152,7 @@ function Map() {
         }
       });
 
-      // Add WMS data from Geoserver to the map
+      // Add WMS data from Geoserver to the map AWS
       map.current.addSource('wms-layer', {
         type: 'raster',
         tiles: [

@@ -111,7 +111,10 @@ function Map() {
         const geometryArray = e.features[0].geometry.coordinates[0]; // Get the geometry of the clicked tile
 
         // Check if Ctrl key is pressed
-        const isCtrlPressed = e.originalEvent.ctrlKey;
+        // const isCtrlPressed = e.originalEvent.ctrlKey;
+        const isCtrlPressed =
+          e.originalEvent.ctrlKey || e.originalEvent.metaKey; // add option to use Command key for Mac
+        console.log(isCtrlPressed);
 
         if (isCtrlPressed) {
           const existingTileIndex = selectedTiles.findIndex(
@@ -152,7 +155,7 @@ function Map() {
         }
       });
 
-      // Add WMS data from Geoserver to the map AWS
+      // Add WMS data from Geoserver (running in AWS) to the map
       map.current.addSource('wms-layer', {
         type: 'raster',
         tiles: [

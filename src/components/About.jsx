@@ -3,6 +3,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { FaLinkedin, FaGithub } from 'react-icons/fa';
 import { BiShare } from 'react-icons/bi';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
+import avatarUrl from '../assets/pga.JPG';
 import {
   Avatar,
   Box,
@@ -65,7 +66,7 @@ function About() {
               <Flex spacing="4">
                 <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
                   <Link href="https://www.linkedin.com/in/garpablo/">
-                    <Avatar name="Pablo García" src="src\assets\pga.JPG" />
+                    <Avatar name="Pablo García" src={avatarUrl} />
                   </Link>
                   <Box>
                     <Heading size="sm">Pablo García</Heading>

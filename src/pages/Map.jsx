@@ -157,8 +157,7 @@ function Map() {
         type: 'raster',
         tiles: [
           // 'http://localhost:8080/geoserver/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.3.0&request=GetMap&crs=EPSG:3857&transparent=true&width=512&height=512&layers=geotiffs', //works
-          // 'http://ec2-13-53-136-102.eu-north-1.compute.amazonaws.com:8080/geoserver/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.0&request=GetMap&crs=EPSG:3857&transparent=true&width=512&height=512&layers=geotiffs', // does not work
-          'http://ec2-13-53-199-118.eu-north-1.compute.amazonaws.com:8080/geoserver/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.3.0&request=GetMap&crs=EPSG:3857&transparent=true&width=512&height=512&layers=ironhack:geotiffs', // does not work
+          'http://ec2-13-53-199-118.eu-north-1.compute.amazonaws.com:8080/geoserver/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.3.0&request=GetMap&crs=EPSG:3857&transparent=true&width=512&height=512&layers=ironhack:geotiffs', // AWS works
         ],
         tileSize: 512,
       });

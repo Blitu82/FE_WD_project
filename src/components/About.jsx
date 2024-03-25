@@ -1,9 +1,19 @@
 import { RiInformationFill } from 'react-icons/ri';
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import { FaLinkedin, FaGithub } from 'react-icons/fa';
+import { BiShare } from 'react-icons/bi';
+import { ExternalLinkIcon } from '@chakra-ui/icons';
 import {
+  Avatar,
+  Box,
   Button,
   Card,
+  CardHeader,
+  CardFooter,
+  Flex,
   FormControl,
   FormLabel,
+  Heading,
   HStack,
   Icon,
   IconButton,
@@ -49,33 +59,81 @@ function About() {
               About
             </Text>
           </HStack>
+
           <Card bg="#f6f8fa" variant="outline" borderColor="#d8dee4" mx="10px">
+            <CardHeader>
+              <Flex spacing="4">
+                <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
+                  <Link href="https://www.linkedin.com/in/garpablo/">
+                    <Avatar name="Pablo García" src="src\assets\pga.JPG" />
+                  </Link>
+                  <Box>
+                    <Heading size="sm">Pablo García</Heading>
+                    <Text>Web Developer, Hydrographic Surveyor</Text>
+                  </Box>
+                </Flex>
+                <IconButton
+                  variant="ghost"
+                  colorScheme="gray"
+                  aria-label="LinkedIn page"
+                  icon={<BsThreeDotsVertical />}
+                />
+              </Flex>
+            </CardHeader>
             <ModalBody>
               <Stack>
                 <FormControl mb="10px">
                   <FormLabel size="sm">About this data:</FormLabel>
                   <Text borderColor="#d8dee4" size="sm" borderRadius="6px">
-                    A OnlyMaps Package is a ZIP file containing a collection of
+                    OnlyMaps Package is a ZIP file containing a collection of
                     GEBCO datasets to ease the download of large amounts of high
                     resolution data. The OnlyMaps products are for
                     non-navigational use only. For more information regarding
                     these products, please refer to the GEBCO Data Portal. Click
-                    here to access:
+                    here to access:{' '}
                     <Text>
                       <Link
+                        color="teal.500"
                         href="https://www.gebco.net/data_and_products/gridded_bathymetry_data/"
                         isExternal
                       >
-                        https://www.gebco.net/data_and_products/gridded_bathymetry_data/
+                        GEBCO portal <ExternalLinkIcon mx="2px" />
                       </Link>
                     </Text>
                     <Text>
-                      OnlyMaps database was last updated: March 5th, 2024
+                      OnlyMaps database was last updated: March, 2024.
                     </Text>
                   </Text>
                 </FormControl>
               </Stack>
             </ModalBody>
+            <CardFooter
+              justify="space-between"
+              flexWrap="wrap"
+              sx={{
+                '& > button': {
+                  minW: '136px',
+                },
+              }}
+            >
+              <Link flex="1" isExternal href="https://github.com/Blitu82">
+                <Button variant="ghost" leftIcon={<FaGithub />}>
+                  GitHub
+                </Button>
+              </Link>
+              <Link
+                flex="1"
+                isExternal
+                href="https://www.linkedin.com/in/garpablo/"
+              >
+                <Button variant="ghost" leftIcon={<FaLinkedin />}>
+                  LinkedIn
+                </Button>
+              </Link>
+              <Button flex="1" variant="ghost" leftIcon={<BiShare />}>
+                Share
+              </Button>
+            </CardFooter>
           </Card>
 
           <ModalFooter>

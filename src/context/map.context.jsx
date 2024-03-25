@@ -13,7 +13,6 @@ const MapProviderWrapper = props => {
   const [lat, setLat] = useState(34.727);
   const [zoom, setZoom] = useState(4.5);
   const [tiles, setTiles] = useState(null);
-  const [selectedTileBoundingBox, setSelectedTileBoundingBox] = useState(null);
   const [downloadLink, setDownloadLink] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedTiles, setSelectedTiles] = useState([]);

@@ -17,6 +17,7 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
+  extendTheme,
   HStack,
   Icon,
   IconButton,
@@ -38,6 +39,24 @@ function Layers() {
   const btnRef = React.useRef();
   const { map, isDrawerOpen, addToCart, selectedTiles, setSelectedTiles } =
     useContext(MapContext);
+
+  const zIndices = {
+    hide: -1,
+    auto: 'auto',
+    base: 0,
+    docked: 10,
+    dropdown: 1000,
+    sticky: 1100,
+    banner: 1200,
+    overlay: 1300,
+    modal: 1400,
+    popover: 1500,
+    skipLink: 1600,
+    toast: 1700,
+    tooltip: 1800,
+  };
+
+  const theme = extendTheme({ zIndices });
 
   //Helper function that allows zooming to the tile selected by the user
   const zoomToFeature = tileId => {
@@ -129,6 +148,7 @@ function Layers() {
         onClose={onClose}
         finalFocusRef={btnRef}
         size="sm"
+        // zIndex="hide"
       >
         <DrawerOverlay h="auto" />
         <DrawerContent

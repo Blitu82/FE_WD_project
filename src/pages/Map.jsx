@@ -46,7 +46,7 @@ function Map() {
       },
     });
 
-    ///TEST
+    ///TEST deselect items by clicking anywhere on the map.
 
     //   const handleMapClick = (e) => {
     //     // Check if it's a left click (button 0) and if the click is outside the tiles area
@@ -132,8 +132,9 @@ function Map() {
             ]);
           } else {
             // Remove tile from selectedTiles array
-            const updatedSelectedTiles = [...selectedTiles];
-            updatedSelectedTiles.splice(existingTileIndex, 1);
+            const updatedSelectedTiles = selectedTiles.filter(
+              tile => tile.id !== clickedTileId
+            );
             setSelectedTiles(updatedSelectedTiles);
           }
         } else {
@@ -155,7 +156,9 @@ function Map() {
       map.current.addSource('wms-layer', {
         type: 'raster',
         tiles: [
-          'http://localhost:8080/geoserver/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.3.0&request=GetMap&crs=EPSG:3857&transparent=true&width=512&height=512&layers=geotiffs', //works
+          // 'http://localhost:8080/geoserver/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.3.0&request=GetMap&crs=EPSG:3857&transparent=true&width=512&height=512&layers=geotiffs', //works
+          // 'http://ec2-13-53-136-102.eu-north-1.compute.amazonaws.com:8080/geoserver/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.0&request=GetMap&crs=EPSG:3857&transparent=true&width=512&height=512&layers=geotiffs', // does not work
+          'http://ec2-13-53-136-102.eu-north-1.compute.amazonaws.com:8080/geoserver/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.3.0&request=GetMap&crs=EPSG:3857&transparent=true&width=512&height=512&layers=ironhack:geotiffs', // does not work
         ],
         tileSize: 512,
       });
@@ -234,7 +237,8 @@ function Map() {
         ref={mapContainer}
         w="100%"
         h="100%"
-        style={{ overflow: 'auto' }}
+        style={{ overflow: 'auto', zIndex: 0 }}
+        // style={{ overflow: 'auto', position: 'relative', zIndex: 1 }}
       ></Box>
       <Layers />
       <QuickTips />

@@ -3,7 +3,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { FaLinkedin, FaGithub } from 'react-icons/fa';
 import { BiShare } from 'react-icons/bi';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
-import avatarUrl from '../assets/pga.JPG';
+import avatarUrl from '../assets/pga.jpg';
 import {
   Avatar,
   Box,

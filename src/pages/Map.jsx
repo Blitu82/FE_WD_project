@@ -45,10 +45,6 @@ function Map() {
       },
     });
 
-    ///Deselect items by clicking anywhere on the map.
-
-    ////TEST
-
     // Add navigation control (the +/- zoom buttons)
     map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
@@ -84,6 +80,7 @@ function Map() {
       });
 
       // Handle click event on tiles - multiple selection
+
       map.current.on('click', 'tile-fill-layer', e => {
         const clickedTileId = e.features[0].properties.id; // Get the id of the clicked tile
         const clickedTileName = e.features[0].properties.name; // Get the name of the clicked tile
@@ -100,7 +97,6 @@ function Map() {
 
           if (isCtrlPressed) {
             if (existingTileIndex === -1) {
-              console.log('existing tile index', existingTileIndex);
               // Add tile to selectedTiles array with Bounding Box attribute
               const bbox = getBoundingBox(geometryArray);
               return [
@@ -114,7 +110,6 @@ function Map() {
                 },
               ];
             } else {
-              console.log('remove tile', existingTileIndex);
               // Remove tile from selectedTiles array
               const updatedSelectedTiles = [
                 ...prevSelectedTiles.slice(0, existingTileIndex),

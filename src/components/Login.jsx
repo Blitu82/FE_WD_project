@@ -24,19 +24,19 @@ import {
   ModalCloseButton,
   Stack,
   Text,
+  useBreakpointValue,
   useDisclosure,
   useToast,
   VStack,
 } from '@chakra-ui/react';
 
 function Login() {
+  const { storeToken, authenticateUser } = useContext(AuthContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const toast = useToast();
-
-  const { storeToken, authenticateUser } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -81,6 +81,11 @@ function Login() {
     onClose();
   };
 
+  const buttonText = useBreakpointValue({
+    sm: 'Login',
+    base: '',
+  });
+
   // From https://chakra-ui.com/docs/components/editable
   return (
     <>
@@ -92,7 +97,7 @@ function Login() {
           onOpen();
         }}
       >
-        Login
+        {buttonText}
       </Button>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

@@ -1,10 +1,14 @@
 import { useContext } from 'react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { AuthContext } from '../context/auth.context';
-import { Button } from '@chakra-ui/react';
+import { Button, useBreakpointValue } from '@chakra-ui/react';
 
 function Logout() {
   const { logoutUser } = useContext(AuthContext);
+  const buttonText = useBreakpointValue({
+    sm: 'Logout',
+    base: '',
+  });
 
   return (
     <>
@@ -14,7 +18,7 @@ function Logout() {
         variant="solid"
         onClick={logoutUser}
       >
-        Logout
+        {buttonText}
       </Button>
     </>
   );

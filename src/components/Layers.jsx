@@ -22,6 +22,7 @@ import {
   Spacer,
   Text,
   Tooltip,
+  useBreakpointValue,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
@@ -37,6 +38,9 @@ function Layers() {
   const btnRef = React.useRef();
   const { map, isDrawerOpen, addToCart, selectedTiles, setSelectedTiles } =
     useContext(MapContext);
+
+  // Determine the placement of the Drawer base on screen size
+  const drawerPlacement = useBreakpointValue({ base: 'bottom', lg: 'left' });
 
   //Helper function that allows zooming to the tile selected by the user.
   const zoomToFeature = tileId => {
@@ -125,7 +129,7 @@ function Layers() {
       </Tooltip>
       <Drawer
         isOpen={isOpen}
-        placement="left"
+        placement={drawerPlacement}
         onClose={onClose}
         finalFocusRef={btnRef}
         size="sm"
@@ -133,15 +137,22 @@ function Layers() {
         <DrawerOverlay h="auto" />
         <DrawerContent
           containerProps={{
-            top: '95px',
-            left: '20px',
+            top: useBreakpointValue({ base: 'auto', lg: '95px' }),
+            left: useBreakpointValue({ base: 'auto', lg: '20px' }),
             height: `${drawerContentHeight}px`,
-            width: '400px', // bug fix: otherwise it affects the map clicks
-            overflowY: `${
-              drawerContentHeight > viewportHeight ? 'visible' : 'hidden'
-            }`,
+            width: useBreakpointValue({ base: '100%', lg: '400px' }), // bug fix: otherwise it affects the map clicks
+            overflowY: useBreakpointValue({
+              base: 'scroll',
+              lg: `${
+                drawerContentHeight > viewportHeight ? 'visible' : 'hidden'
+              }`,
+            }),
           }}
-          style={{ position: 'absolute', height: '100%' }}
+          style={{
+            position: useBreakpointValue({ base: 'fixed', lg: 'absolute' }),
+            height: useBreakpointValue({ base: 'auto', lg: '100%' }),
+            bottom: useBreakpointValue({ base: '0', lg: 'auto' }),
+          }}
         >
           <DrawerCloseButton />
           <DrawerHeader>

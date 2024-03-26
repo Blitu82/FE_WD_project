@@ -8,7 +8,6 @@ import QuickTips from '../components/QuickTips';
 import { MapContext } from '../context/map.context';
 
 // Code based on https://medium.com/@gisjohnecs/part-1-web-mapping-with-mapbox-gl-react-js-7d11b50d86ec
-
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_KEY;
 
 function Map() {
@@ -46,27 +45,7 @@ function Map() {
       },
     });
 
-    ///TEST deselect items by clicking anywhere on the map.
-
-    //   const handleMapClick = (e) => {
-    //     // Check if it's a left click (button 0) and if the click is outside the tiles area
-    //     if (e.button === 0 && !isClickInsideTilesArea(e)) {
-    //       setSelectedTiles([]);
-    //     }
-    //   };
-
-    //   const isClickInsideTilesArea = (e) => {
-    //     const tilesLayer = map.current.getLayer('tile-fill-layer');
-    //     const features = map.current.queryRenderedFeatures(e.point, {
-    //       layers: [tilesLayer.id],
-    //     });
-    //     return features.length > 0;
-    //   };
-
-    //   map.on('mousedown', handleMapClick);
-
-    //   return () => map.current.remove();
-    // }, [setSelectedTiles]);
+    ///Deselect items by clicking anywhere on the map.
 
     ////TEST
 
@@ -110,11 +89,9 @@ function Map() {
         const clickedTileName = e.features[0].properties.name; // Get the name of the clicked tile
         const geometryArray = e.features[0].geometry.coordinates[0]; // Get the geometry of the clicked tile
 
-        // Check if Ctrl key is pressed
-        // const isCtrlPressed = e.originalEvent.ctrlKey;
+        // Check if the Ctrl (Windows) or Command (Mac) keys are pressed
         const isCtrlPressed =
-          e.originalEvent.ctrlKey || e.originalEvent.metaKey; // add option to use Command key for Mac
-        console.log(isCtrlPressed);
+          e.originalEvent.ctrlKey || e.originalEvent.metaKey;
 
         if (isCtrlPressed) {
           const existingTileIndex = selectedTiles.findIndex(
@@ -159,7 +136,7 @@ function Map() {
       map.current.addSource('wms-layer', {
         type: 'raster',
         tiles: [
-          // 'http://localhost:8080/geoserver/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.3.0&request=GetMap&crs=EPSG:3857&transparent=true&width=512&height=512&layers=geotiffs', //works
+          // 'http://localhost:8080/geoserver/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.3.0&request=GetMap&crs=EPSG:3857&transparent=true&width=512&height=512&layers=geotiffs', // local works
           'http://ec2-13-53-199-118.eu-north-1.compute.amazonaws.com:8080/geoserver/wms?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.3.0&request=GetMap&crs=EPSG:3857&transparent=true&width=512&height=512&layers=ironhack:geotiffs', // AWS works
         ],
         tileSize: 512,
@@ -188,6 +165,7 @@ function Map() {
       // Copy coordinates array.
       // console.log(e.features[0]);
       // const coordinates = e.features[0].geometry.coordinates.slice();
+      // console.log(coordinates);
       // const properties = e.features[0].properties;
       // const popupHtml = `<strong style="color: black;">Name:</strong><p style="color: black;">${properties.name}</p><br><strong style="color: black;">Address:</strong><p style="color: black;">${properties.address}</p>`;
 
@@ -232,6 +210,30 @@ function Map() {
       ]);
     }
   }, [selectedTiles]);
+
+  // Allow the user to click outside the tiles area to reset the selected tiles
+  useEffect(() => {
+    const handleMapClick = e => {
+      // Check if it's a left click (button 0) and if the click is outside the tiles area
+      if (e.originalEvent.button === 0 && !isClickInsideTilesArea(e)) {
+        setSelectedTiles([]);
+      }
+    };
+
+    const isClickInsideTilesArea = e => {
+      const tilesLayer = map.current.getLayer('tile-fill-layer');
+      const features = map.current.queryRenderedFeatures(e.point, {
+        layers: [tilesLayer.id],
+      });
+      return features.length > 0;
+    };
+
+    map.current.on('mousedown', handleMapClick);
+
+    return () => {
+      map.current.off('mousedown', handleMapClick);
+    };
+  }, [map, selectedTiles, setSelectedTiles]);
 
   return (
     <>

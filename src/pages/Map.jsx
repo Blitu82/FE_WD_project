@@ -93,15 +93,39 @@ function Map() {
         const isCtrlPressed =
           e.originalEvent.ctrlKey || e.originalEvent.metaKey;
 
-        if (isCtrlPressed) {
-          const existingTileIndex = selectedTiles.findIndex(
+        setSelectedTiles(prevSelectedTiles => {
+          const existingTileIndex = prevSelectedTiles.findIndex(
             tile => tile.id === clickedTileId
           );
-          if (existingTileIndex === -1) {
-            // Add tile to selectedTiles array with Bounding Box attribute
+
+          if (isCtrlPressed) {
+            if (existingTileIndex === -1) {
+              console.log('existing tile index', existingTileIndex);
+              // Add tile to selectedTiles array with Bounding Box attribute
+              const bbox = getBoundingBox(geometryArray);
+              return [
+                ...prevSelectedTiles,
+                {
+                  id: clickedTileId,
+                  name: clickedTileName,
+                  geom: geometryArray,
+                  bbox: bbox,
+                  selected: true,
+                },
+              ];
+            } else {
+              console.log('remove tile', existingTileIndex);
+              // Remove tile from selectedTiles array
+              const updatedSelectedTiles = [
+                ...prevSelectedTiles.slice(0, existingTileIndex),
+                ...prevSelectedTiles.slice(existingTileIndex + 1),
+              ];
+              return updatedSelectedTiles;
+            }
+          } else {
+            // If Ctrl key is not pressed, select only the clicked tile
             const bbox = getBoundingBox(geometryArray);
-            setSelectedTiles(prevSelectedTiles => [
-              ...prevSelectedTiles,
+            return [
               {
                 id: clickedTileId,
                 name: clickedTileName,
@@ -109,27 +133,9 @@ function Map() {
                 bbox: bbox,
                 selected: true,
               },
-            ]);
-          } else {
-            // Remove tile from selectedTiles array
-            const updatedSelectedTiles = selectedTiles.filter(
-              tile => tile.id !== clickedTileId
-            );
-            setSelectedTiles(updatedSelectedTiles);
+            ];
           }
-        } else {
-          // If Ctrl key is not pressed, select only the clicked tile
-          const bbox = getBoundingBox(geometryArray);
-          setSelectedTiles([
-            {
-              id: clickedTileId,
-              name: clickedTileName,
-              geom: geometryArray,
-              bbox: bbox,
-              selected: true,
-            },
-          ]);
-        }
+        });
       });
 
       // Add WMS data from Geoserver (running in AWS) to the map
@@ -209,7 +215,7 @@ function Map() {
         2,
       ]);
     }
-  }, [selectedTiles]);
+  }, [map, selectedTiles]);
 
   // Allow the user to click outside the tiles area to reset the selected tiles
   useEffect(() => {
@@ -242,7 +248,6 @@ function Map() {
         w="100%"
         h="100%"
         style={{ overflow: 'auto', zIndex: 0 }}
-        // style={{ overflow: 'auto', position: 'relative', zIndex: 1 }}
       ></Box>
       <Layers />
       <QuickTips />

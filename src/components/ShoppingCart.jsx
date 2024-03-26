@@ -96,7 +96,7 @@ function ShoppingCart() {
 
   return (
     <>
-      <Tooltip label="Shopping cart" fontSize="md">
+      <Tooltip label="Shopping cart" fontSize="md" gutter="25">
         <span>
           <Box position="relative">
             <VStack>

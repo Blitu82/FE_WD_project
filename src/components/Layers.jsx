@@ -8,7 +8,6 @@ import {
   Button,
   Card,
   CardBody,
-  CardFooter,
   Checkbox,
   Divider,
   Drawer,
@@ -17,7 +16,6 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
-  extendTheme,
   HStack,
   Icon,
   IconButton,
@@ -40,25 +38,7 @@ function Layers() {
   const { map, isDrawerOpen, addToCart, selectedTiles, setSelectedTiles } =
     useContext(MapContext);
 
-  const zIndices = {
-    hide: -1,
-    auto: 'auto',
-    base: 0,
-    docked: 10,
-    dropdown: 1000,
-    sticky: 1100,
-    banner: 1200,
-    overlay: 1300,
-    modal: 1400,
-    popover: 1500,
-    skipLink: 1600,
-    toast: 1700,
-    tooltip: 1800,
-  };
-
-  const theme = extendTheme({ zIndices });
-
-  //Helper function that allows zooming to the tile selected by the user
+  //Helper function that allows zooming to the tile selected by the user.
   const zoomToFeature = tileId => {
     const selectedTile = selectedTiles.find(tile => tile.id === tileId);
     if (selectedTile && selectedTile.geom && map.current) {
@@ -83,7 +63,7 @@ function Layers() {
     }
   };
 
-  //Helper function that removes a selected tile from the list
+  //Helper function that removes a selected tile from the list.
   const removeFromList = tileId => {
     const updatedSelectedTiles = selectedTiles.filter(
       tile => tile.id !== tileId
@@ -91,7 +71,7 @@ function Layers() {
     setSelectedTiles(updatedSelectedTiles);
   };
 
-  // Helper function to toggle the selected state of a tile
+  // Helper function to toggle the selected state of a tile.
   const toggleTileSelection = tileId => {
     setSelectedTiles(prevSelectedTiles => {
       return prevSelectedTiles.map(tile => {
@@ -106,7 +86,7 @@ function Layers() {
     });
   };
 
-  // Helper function to select all / none tiles
+  // Helper function to select all / none tiles.
   const selectAllNone = () => {
     setSelectedTiles(prevSelectedTiles => {
       return prevSelectedTiles.map(tile => {
@@ -118,8 +98,9 @@ function Layers() {
     });
   };
 
-  // Variable used to change the size of the Layers drawer dynamically
-  const drawerContentHeight = selectedTiles.length * 50 + 250;
+  // Variables used to change the size of the Layers drawer dynamically and enable scrolling.
+  const drawerContentHeight = selectedTiles.length * 40 + 250;
+  const viewportHeight = window.innerHeight - 500;
 
   useEffect(() => {
     if (isDrawerOpen) {
@@ -148,7 +129,6 @@ function Layers() {
         onClose={onClose}
         finalFocusRef={btnRef}
         size="sm"
-        // zIndex="hide"
       >
         <DrawerOverlay h="auto" />
         <DrawerContent
@@ -156,10 +136,12 @@ function Layers() {
             top: '95px',
             left: '20px',
             height: `${drawerContentHeight}px`,
-            maxHeight: '100vh',
-            overflowY: 'auto',
+            width: '400px', // bug fix: otherwise it affects the map clicks
+            overflowY: `${
+              drawerContentHeight > viewportHeight ? 'visible' : 'hidden'
+            }`,
           }}
-          style={{ position: 'absolute' }}
+          style={{ position: 'absolute', height: '100%' }}
         >
           <DrawerCloseButton />
           <DrawerHeader>
@@ -170,7 +152,7 @@ function Layers() {
           </DrawerHeader>
           <Divider />
 
-          <DrawerBody>
+          <DrawerBody maxHeight={`${drawerContentHeight}px`}>
             <VStack align="stretch">
               {!isLoggedIn && (
                 <Alert status="error">
@@ -194,10 +176,19 @@ function Layers() {
                   >
                     Add to cart
                   </Button>
-                  <Checkbox defaultChecked onChange={selectAllNone}>
+                  <Checkbox
+                    defaultChecked
+                    onChange={selectAllNone}
+                    colorScheme="blue"
+                  >
                     Select all / none
                   </Checkbox>
-                  <Card bg="#f6f8fa" variant="outline" borderColor="#d8dee4">
+                  <Card
+                    bg="#f6f8fa"
+                    variant="outline"
+                    borderColor="#d8dee4"
+                    rounded="none"
+                  >
                     <CardBody width="100%">
                       {selectedTiles.map(tile => (
                         <Box key={tile.id} h="auto">
@@ -232,7 +223,6 @@ function Layers() {
                         </Box>
                       ))}
                     </CardBody>
-                    <CardFooter></CardFooter>
                   </Card>
                 </>
               )}

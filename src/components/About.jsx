@@ -35,7 +35,7 @@ function About() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
-      <Tooltip label="About" fontSize="md">
+      <Tooltip label="About" fontSize="md" gutter="22">
         <span>
           <IconButton
             bg="#222"

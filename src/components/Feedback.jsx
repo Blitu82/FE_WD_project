@@ -99,7 +99,7 @@ function Feedback() {
 
   return (
     <>
-      <Tooltip label="Feedback" fontSize="md">
+      <Tooltip label="Feedback" fontSize="md" gutter="24">
         <span>
           <IconButton
             bg="#222"

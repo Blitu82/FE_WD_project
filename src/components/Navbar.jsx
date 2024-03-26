@@ -27,13 +27,17 @@ function Navbar() {
       <HStack spacing="10px">
         <NavLink to="/" onClick={reloadPage}>
           <Image
-            boxSize={['25px', '30px', '40px']}
+            boxSize={['30px', '35px', '40px']}
             src={imgUrl}
             alt="logo"
           ></Image>
         </NavLink>
         <NavLink to="/" onClick={reloadPage}>
-          <Heading as="h1" color="white">
+          <Heading
+            as="h1"
+            color="white"
+            fontSize={{ base: '20px', md: '30px', lg: '40px' }}
+          >
             OnlyMaps
           </Heading>
         </NavLink>

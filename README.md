@@ -1,11 +1,12 @@
 # OnlyMaps
 
-![OnlyMaps Logo](https://github.com/Blitu82/TrekTrackr/blob/main/public/trektracker_app.png)
+![OnlyMaps Logo](https://github.com/Blitu82/FE_WD_project/blob/main/public/logo_example.png)
 <br>
 
 ## Description
 
 Map server app that allows users to download bathymetric coverages
+![Screenshot](https://github.com/Blitu82/FE_WD_project/blob/main/public/onlymaps_app.png)
 
 ## Routes
 

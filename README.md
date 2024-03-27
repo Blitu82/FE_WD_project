@@ -1,11 +1,14 @@
-# OnlyMaps
-
-![OnlyMaps Logo](https://github.com/Blitu82/FE_WD_project/blob/main/public/logo_example.png)
-<br>
+<div style="display: flex; align-items: center;">
+    <!-- Logo -->
+    <img src="https://github.com/Blitu82/FE_WD_project/blob/main/public/logo_example.png" alt="OnlyMaps Logo" width="50" height="50">
+    <!-- Title -->
+    <h1>OnlyMaps</h1>
+</div>
 
 ## Description
 
-Map server app that allows users to download bathymetric coverages
+Mapping server app that allows users to download geographic data.
+<br>
 ![Screenshot](https://github.com/Blitu82/FE_WD_project/blob/main/public/onlymaps_app.png)
 
 ## Routes

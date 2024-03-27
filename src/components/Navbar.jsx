@@ -39,6 +39,11 @@ function Navbar() {
     lg: '40px',
   });
 
+  const showFeedbackAndAbout = useBreakpointValue({
+    base: false,
+    sm: true,
+  });
+
   const reloadPage = () => {
     window.location.reload();
   };
@@ -68,8 +73,8 @@ function Navbar() {
       <Spacer />
       <HStack spacing={iconSpacing}>
         {isLoggedIn && <ShoppingCart />}
-        {isLoggedIn && <Feedback />}
-        <About />
+        {isLoggedIn && showFeedbackAndAbout && <Feedback />}
+        {showFeedbackAndAbout && <About />}
         {isLoggedIn && <Logout />}
         {!isLoggedIn && <Login />}
       </HStack>

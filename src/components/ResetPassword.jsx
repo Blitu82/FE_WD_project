@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signup } from '../api/auth.api';
+import { changePassword } from '../api/auth.api';
 import imgUrl from '../assets/logo_example.png';
 import {
-  Box,
   Button,
   Card,
-  Center,
   FormControl,
   FormLabel,
   HStack,
@@ -14,7 +12,6 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  Link,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -29,31 +26,33 @@ import {
   VStack,
 } from '@chakra-ui/react';
 
-function Signup() {
+function ResetPassword() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [password, setPassword] = useState('');
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const [error, setError] = useState(null);
-  const [showPassword, setShowPassword] = useState(false);
-
-  const handleShowPassword = () => setShowPassword(!showPassword);
-
   const toast = useToast();
 
   const navigate = useNavigate();
 
-  const signupSucessToast = () => {
+  const handleShowOldPassword = () => setShowOldPassword(!showOldPassword);
+  const handleShowNewPassword = () => setShowNewPassword(!showNewPassword);
+
+  const passwordSucessToast = () => {
     toast({
-      title: 'You have successfully signed up.',
+      title: 'You have successfully changed your password.',
       status: 'success',
       duration: 5000,
       isClosable: true,
     });
   };
 
-  const signupErrorToast = errorMessage => {
+  const passwordErrorToast = errorMessage => {
     toast({
-      title: 'Signup Error',
+      title: 'There was problem resetting the password.',
       description: errorMessage,
       status: 'error',
       duration: 5000,
@@ -61,37 +60,41 @@ function Signup() {
     });
   };
 
-  const handleSignupSubmit = async e => {
+  const handleChangePasswordSubmit = async e => {
     e.preventDefault();
-    // Create an object representing the request body
-    const user = { email, password };
+    const user = { email, oldPassword, newPassword };
     try {
-      await signup(user);
-      signupSucessToast();
+      await changePassword(user);
+      passwordSucessToast();
       setEmail('');
-      setPassword('');
+      setOldPassword('');
+      setNewPassword('');
       navigate('/');
       onClose();
     } catch (error) {
-      console.log('Error signing up', error);
       setError(error.response.data.message);
-      signupErrorToast(error.response.data.message);
+      passwordErrorToast(error.response.data.message);
       setEmail('');
-      setPassword('');
+      setOldPassword('');
+      setNewPassword('');
     }
   };
 
   return (
     <>
-      <Link
-        color="#0969da"
+      <Button
+        as="a"
         href="#"
+        variant="link"
+        size="xs"
+        color="#0969da"
+        fontWeight="500"
         onClick={() => {
           onOpen();
         }}
       >
-        Create an account
-      </Link>
+        Reset password
+      </Button>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -104,16 +107,10 @@ function Signup() {
               fontSize="24px"
               letterSpacing="-0.5px"
             >
-              Signup to OnlyMaps
+              Reset password
             </ModalHeader>
           </VStack>
-          <Card
-            bg="#f6f8fa"
-            variant="outline"
-            borderColor="#d8dee4"
-            // maW="308px"
-            mx="10px"
-          >
+          <Card bg="#f6f8fa" variant="outline" borderColor="#d8dee4" mx="10px">
             <ModalBody>
               <Stack>
                 <FormControl>
@@ -131,23 +128,54 @@ function Signup() {
                 </FormControl>
                 <FormControl>
                   <HStack justifyContent="space-between">
-                    <FormLabel size="sm">Password</FormLabel>
+                    <FormLabel size="sm">Current password</FormLabel>
                   </HStack>
                   <InputGroup size="sm">
                     <Input
                       pr="4.5rem"
-                      type={showPassword ? 'text' : 'password'}
+                      type={showOldPassword ? 'text' : 'password'}
                       bg="white"
                       borderColor="#d8dee4"
                       size="sm"
                       borderRadius="6px"
-                      placeholder="Enter password"
-                      value={password}
-                      onChange={e => setPassword(e.target.value)}
+                      placeholder="Enter current password"
+                      value={oldPassword}
+                      onChange={e => setOldPassword(e.target.value)}
                     />
                     <InputRightElement width="4.5rem">
-                      <Button h="1.5rem" size="sm" onClick={handleShowPassword}>
-                        {showPassword ? 'Hide' : 'Show'}
+                      <Button
+                        h="1.5rem"
+                        size="sm"
+                        onClick={handleShowOldPassword}
+                      >
+                        {showOldPassword ? 'Hide' : 'Show'}
+                      </Button>
+                    </InputRightElement>
+                  </InputGroup>
+                </FormControl>
+                <FormControl>
+                  <HStack justifyContent="space-between">
+                    <FormLabel size="sm">New password</FormLabel>
+                  </HStack>
+                  <InputGroup size="sm">
+                    <Input
+                      pr="4.5rem"
+                      type={showNewPassword ? 'text' : 'password'}
+                      bg="white"
+                      borderColor="#d8dee4"
+                      size="sm"
+                      borderRadius="6px"
+                      placeholder="Enter new password"
+                      value={newPassword}
+                      onChange={e => setNewPassword(e.target.value)}
+                    />
+                    <InputRightElement width="4.5rem">
+                      <Button
+                        h="1.5rem"
+                        size="sm"
+                        onClick={handleShowNewPassword}
+                      >
+                        {showNewPassword ? 'Hide' : 'Show'}
                       </Button>
                     </InputRightElement>
                   </InputGroup>
@@ -158,25 +186,18 @@ function Signup() {
                   size="sm"
                   _hover={{ bg: '#2c974b' }}
                   _active={{ bg: '#298e46' }}
-                  onClick={handleSignupSubmit}
+                  onClick={handleChangePasswordSubmit}
                 >
-                  Signup
+                  Reset password
                 </Button>
                 {error & <Text>{error}</Text>}
               </Stack>
             </ModalBody>
           </Card>
-          <Box mt="10px">
-            <Center>
-              <HStack fontSize="sm" spacing="1">
-                <Text color="white">New to OnlyMaps?</Text>
-              </HStack>
-            </Center>
-          </Box>
 
           <ModalFooter>
             <Button variant="ghost" mr={3} onClick={onClose}>
-              Close
+              Cancel
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -185,4 +206,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default ResetPassword;

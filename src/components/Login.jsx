@@ -1,4 +1,5 @@
 import Signup from './Signup';
+import ResetPassword from './ResetPassword';
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowForwardIcon } from '@chakra-ui/icons';
@@ -15,6 +16,8 @@ import {
   HStack,
   Image,
   Input,
+  InputGroup,
+  InputRightElement,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -36,9 +39,13 @@ function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+
   const toast = useToast();
 
   const navigate = useNavigate();
+
+  const handleShowPassword = () => setShowPassword(!showPassword);
 
   const loginSucessToast = () => {
     toast({
@@ -114,13 +121,7 @@ function Login() {
               Login to OnlyMaps
             </ModalHeader>
           </VStack>
-          <Card
-            bg="#f6f8fa"
-            variant="outline"
-            borderColor="#d8dee4"
-            // maW="308px"
-            mx="10px"
-          >
+          <Card bg="#f6f8fa" variant="outline" borderColor="#d8dee4" mx="10px">
             <ModalBody>
               <Stack>
                 <FormControl>
@@ -131,7 +132,7 @@ function Login() {
                     borderColor="#d8dee4"
                     size="sm"
                     borderRadius="6px"
-                    placeholder="Email"
+                    placeholder="Enter email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                   />
@@ -139,27 +140,26 @@ function Login() {
                 <FormControl>
                   <HStack justifyContent="space-between">
                     <FormLabel size="sm">Password</FormLabel>
-                    <Button
-                      as="a"
-                      href="#"
-                      variant="link"
-                      size="xs"
-                      color="#0969da"
-                      fontWeight="500"
-                    >
-                      Forgot password?
-                    </Button>
+                    <ResetPassword />
                   </HStack>
-                  <Input
-                    type="password"
-                    bg="white"
-                    borderColor="#d8dee4"
-                    size="sm"
-                    borderRadius="6px"
-                    placeholder="Password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                  />
+                  <InputGroup size="sm">
+                    <Input
+                      pr="4.5rem"
+                      type={showPassword ? 'text' : 'password'}
+                      bg="white"
+                      borderColor="#d8dee4"
+                      size="sm"
+                      borderRadius="6px"
+                      placeholder="Enter password"
+                      value={password}
+                      onChange={e => setPassword(e.target.value)}
+                    />
+                    <InputRightElement width="4.5rem">
+                      <Button h="1.5rem" size="sm" onClick={handleShowPassword}>
+                        {showPassword ? 'Hide' : 'Show'}
+                      </Button>
+                    </InputRightElement>
+                  </InputGroup>
                 </FormControl>
                 <Button
                   bg="#2da44e"

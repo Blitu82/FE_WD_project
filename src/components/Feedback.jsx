@@ -83,10 +83,6 @@ function Feedback() {
       feedbackSucessToast();
       navigate('/');
       handleCloseModal();
-      setUserCategory(null);
-      setUserRating(0);
-      setUserFeedback('');
-      setUserEmail('');
     } catch (error) {
       setError(error.response.data.message);
       feedbackErrorToast(error.response.data.message);
@@ -95,6 +91,10 @@ function Feedback() {
 
   const handleCloseModal = () => {
     onClose();
+    setUserCategory(null);
+    setUserRating(0);
+    setUserFeedback('');
+    setUserEmail('');
   };
 
   return (
@@ -219,6 +219,7 @@ function Feedback() {
                   _hover={{ bg: '#2c974b' }}
                   _active={{ bg: '#298e46' }}
                   onClick={handleFeedbackSubmit}
+                  boxShadow="lg"
                 >
                   Submit
                 </Button>
@@ -227,7 +228,7 @@ function Feedback() {
           </Card>
 
           <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={onClose}>
+            <Button variant="ghost" mr={3} onClick={handleCloseModal}>
               Cancel
             </Button>
           </ModalFooter>

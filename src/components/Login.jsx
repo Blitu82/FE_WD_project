@@ -2,7 +2,7 @@ import Signup from './Signup';
 import ResetPassword from './ResetPassword';
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowForwardIcon } from '@chakra-ui/icons';
+import { ArrowForwardIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { login } from '../api/auth.api';
 import { AuthContext } from '../context/auth.context';
 import imgUrl from '../assets/logo_example.png';
@@ -86,6 +86,8 @@ function Login() {
 
   const handleCloseModal = () => {
     onClose();
+    setEmail('');
+    setPassword('');
   };
 
   const buttonText = useBreakpointValue({
@@ -156,7 +158,7 @@ function Login() {
                     />
                     <InputRightElement width="4.5rem">
                       <Button h="1.5rem" size="sm" onClick={handleShowPassword}>
-                        {showPassword ? 'Hide' : 'Show'}
+                        {showPassword ? <ViewOffIcon /> : <ViewIcon />}
                       </Button>
                     </InputRightElement>
                   </InputGroup>
@@ -168,6 +170,7 @@ function Login() {
                   _hover={{ bg: '#2c974b' }}
                   _active={{ bg: '#298e46' }}
                   onClick={handleLoginSubmit}
+                  boxShadow="lg"
                 >
                   Log in
                 </Button>
@@ -184,7 +187,7 @@ function Login() {
           </Box>
 
           <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={onClose}>
+            <Button variant="ghost" mr={3} onClick={handleCloseModal}>
               Close
             </Button>
           </ModalFooter>

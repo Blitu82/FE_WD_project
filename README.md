@@ -1,65 +1,82 @@
 # OnlyMaps
 
-![TREKTRACKR Logo](https://github.com/Blitu82/TrekTrackr/blob/main/public/trektracker_app.png)
+![OnlyMaps Logo](https://github.com/Blitu82/TrekTrackr/blob/main/public/trektracker_app.png)
 <br>
 
 ## Description
 
 Map server app that allows users to download bathymetric coverages
 
-## Data
+## Routes
 
-Itinerary
+### Grid Routes
 
-```json
+| Method | Route         | Description                                              |
+| ------ | ------------- | -------------------------------------------------------- |
+| GET    | /api/grid     | Returns all tiles                                        |
+| POST   | /api/grid     | Creates new tiles using the files in the /geojson folder |
+| GET    | /api/download | Endpoint for downloading coverage data from GeoServer    |
 
+### Authentication Routes
+
+| Method | Route                 | Description                                  |
+| ------ | --------------------- | -------------------------------------------- |
+| POST   | /auth/signup          | Creates a new user                           |
+| POST   | /auth/login           | Verifies email and password and return a JWT |
+| GET    | /auth/verify          | Verifies JWT stored on the client            |
+| POST   | /auth/change-password | Allows a user to change their password       |
+
+### User Feedback Routes
+
+| Method | Route         | Description                           |
+| ------ | ------------- | ------------------------------------- |
+| POST   | /api/feedback | Allows a user to send a feedback form |
+
+## Models
+
+### Polygon Schema
+
+```js
 {
-  id: 1,
-  name: "Lisbon Castle",
-  address: "R. Costa do Castelo",
-  latitude: 38.713909,
-  longitude: -9.1333476
-},
-{
-  id: 2,
-  name: "Santa Justa Lift",
-  address: "Lg. do Carmo / R. do Ouro",
-  latitude: 38.7123,
-  longitude: -9.1397
+  type: {
+    type: String,
+    enum: ['Polygon'],
+    required: true
+  },
+  coordinates: {
+    type: [[[Number]]],
+    required: true
+  }
 }
-
-
 ```
 
-Activities
+### Grid Schema
 
-```json
+```js
 {
-  id: 1,
-  itineraryId: 1,
-  title: "cultural"
-},
-{
-  id: 2,
-  itineraryId: 2,
-  title: "adventure"
-},
-{
-  id: 3,
-  itineraryId: 2,
-  title: "culinary"
-},
-{
-  id: 4,
-  itineraryId: 1,
-  title: "historical tour"
-},
-{
-  id: 5,
-  itineraryId: 2,
-  title: "photography"
+  name: String,
+  location: polygonSchema,
 }
+```
 
+### User Schema
+
+```js
+{
+  email: String,
+  password: String,
+}
+```
+
+### Feedback Schema
+
+```js
+{
+  category: String,
+  rating: Number,
+  feedback: String,
+  email: String,
+}
 ```
 
 <br>
@@ -78,14 +95,12 @@ Activities
 
 ## GitHub
 
-[Frontend](https://github.com/Blitu82/TrekTrackr)
+[Frontend](https://github.com/Blitu82/FE_WD_project)
 
-[Backend](https://github.com/Blitu82/json-server-backend)
+[Backend](https://github.com/Blitu82/BE_WD_project)
 
-[Deployed version](https://trektrackr.netlify.app/)
+[Deployed version](https://onlymaps.netlify.app/)
 
 ## Contributors
-
-Estanislau Mendes - [GitHub](https://github.com/estanislaumendes) - [LinkedIn](https://www.linkedin.com/in/estanislau-mendes)
 
 Pablo García García - [GitHub](https://github.com/Blitu82) - [LinkedIn](https://www.linkedin.com/in/garpablo/)

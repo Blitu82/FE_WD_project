@@ -86,23 +86,27 @@ function About() {
                 <FormControl mb="10px">
                   <FormLabel size="sm">About this data:</FormLabel>
                   <Text borderColor="#d8dee4" size="sm" borderRadius="6px">
-                    OnlyMaps Package is a ZIP file containing a collection of
-                    GEBCO datasets to ease the download of large amounts of high
-                    resolution data. The OnlyMaps products are for
-                    non-navigational use only. For more information regarding
-                    these products, please refer to the GEBCO Data Portal. Click
-                    here to access:{' '}
+                    OnlyMaps is a mapping server app developed as the final
+                    project for my Ironhack Web Development course. The app
+                    contains a collection of GEBCO datasets to facilitate the
+                    download of large amounts of high resolution bathymetry
+                    data. For more information regarding these products, please
+                    refer to the GEBCO Data Portal:
+                    <br />
+                    <br />
                     <Text>
                       <Link
                         color="teal.500"
                         href="https://www.gebco.net/data_and_products/gridded_bathymetry_data/"
                         isExternal
                       >
-                        GEBCO portal <ExternalLinkIcon mx="2px" />
+                        <strong>GEBCO portal</strong>{' '}
+                        <ExternalLinkIcon mx="2px" />
                       </Link>
                     </Text>
+                    <br />
                     <Text>
-                      OnlyMaps database was last updated: March, 2024.
+                      The OnlyMaps database was last updated: March, 2024.
                     </Text>
                   </Text>
                 </FormControl>

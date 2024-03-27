@@ -25,12 +25,14 @@ import {
   Text,
   Tooltip,
   useDisclosure,
+  useTheme,
   useToast,
   VStack,
   Icon,
 } from '@chakra-ui/react';
 
 function ShoppingCart() {
+  const theme = useTheme();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -156,8 +158,12 @@ function ShoppingCart() {
                               <Checkbox
                                 defaultChecked
                                 isChecked={tile.selected}
+                                colorScheme="white"
+                                iconColor={theme.colors.blue[900]}
                               >
-                                <Text>{tile.name}</Text>
+                                <Text>
+                                  <b>{tile.name}</b>
+                                </Text>
                               </Checkbox>
                               <Spacer />
                               <Tooltip label="Remove from cart" fontSize="sm">
@@ -166,6 +172,8 @@ function ShoppingCart() {
                                   icon={<DeleteIcon />}
                                   size="sm"
                                   onClick={() => removeFromCart(tile.id)}
+                                  bg="#004c80"
+                                  boxShade="lg"
                                 ></IconButton>
                               </Tooltip>
                             </HStack>
@@ -199,6 +207,7 @@ function ShoppingCart() {
                     bg="#2da44e"
                     color="white"
                     size="sm"
+                    boxShade="lg"
                     _hover={{ bg: '#2c974b' }}
                     _active={{ bg: '#298e46' }}
                     isLoading={isDownloading}

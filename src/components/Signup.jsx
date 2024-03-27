@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signup } from '../api/auth.api';
 import imgUrl from '../assets/logo_example.png';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
@@ -107,13 +108,7 @@ function Signup() {
               Signup to OnlyMaps
             </ModalHeader>
           </VStack>
-          <Card
-            bg="#f6f8fa"
-            variant="outline"
-            borderColor="#d8dee4"
-            // maW="308px"
-            mx="10px"
-          >
+          <Card bg="#f6f8fa" variant="outline" borderColor="#d8dee4" mx="10px">
             <ModalBody>
               <Stack>
                 <FormControl>
@@ -147,7 +142,7 @@ function Signup() {
                     />
                     <InputRightElement width="4.5rem">
                       <Button h="1.5rem" size="sm" onClick={handleShowPassword}>
-                        {showPassword ? 'Hide' : 'Show'}
+                        {showPassword ? <ViewOffIcon /> : <ViewIcon />}
                       </Button>
                     </InputRightElement>
                   </InputGroup>
@@ -159,6 +154,7 @@ function Signup() {
                   _hover={{ bg: '#2c974b' }}
                   _active={{ bg: '#298e46' }}
                   onClick={handleSignupSubmit}
+                  boxShadow="lg"
                 >
                   Signup
                 </Button>

@@ -24,6 +24,7 @@ import {
   Tooltip,
   useBreakpointValue,
   useDisclosure,
+  useTheme,
   VStack,
 } from '@chakra-ui/react';
 import { ArrowRightIcon, Search2Icon, CloseIcon } from '@chakra-ui/icons';
@@ -33,6 +34,7 @@ import { MapContext } from '../context/map.context';
 import { AuthContext } from '../context/auth.context';
 
 function Layers() {
+  const theme = useTheme();
   const { isLoggedIn } = useContext(AuthContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef();
@@ -120,6 +122,8 @@ function Layers() {
         <IconButton
           ref={btnRef}
           colorScheme="blue"
+          bg="#004c80"
+          boxShadow="lg"
           onClick={onOpen}
           position="absolute"
           top="95px"
@@ -181,6 +185,8 @@ function Layers() {
                 <>
                   <Button
                     colorScheme="blue"
+                    bg="#004c80"
+                    boxShadow="lg"
                     onClick={addToCart}
                     leftIcon={<Icon as={PiShoppingCartSimpleFill} />}
                     rounded="none"
@@ -190,7 +196,8 @@ function Layers() {
                   <Checkbox
                     defaultChecked
                     onChange={selectAllNone}
-                    colorScheme="blue"
+                    colorScheme="white"
+                    iconColor={theme.colors.blue[900]}
                   >
                     Select all / none
                   </Checkbox>
@@ -206,6 +213,8 @@ function Layers() {
                           <VStack alignItems="left">
                             <HStack marginBottom="10px">
                               <Checkbox
+                                colorScheme="white"
+                                iconColor={theme.colors.blue[900]}
                                 defaultChecked
                                 isChecked={tile.selected}
                                 onChange={() => toggleTileSelection(tile.id)}
@@ -215,6 +224,8 @@ function Layers() {
                               <Spacer />
                               <Tooltip label="Zoom to feature" fontSize="sm">
                                 <IconButton
+                                  bg="#004c80"
+                                  boxShadow="lg"
                                   colorScheme="blue"
                                   icon={<Search2Icon />}
                                   onClick={() => zoomToFeature(tile.id)}
@@ -223,6 +234,8 @@ function Layers() {
                               </Tooltip>
                               <Tooltip label="Remove from list" fontSize="sm">
                                 <IconButton
+                                  bg="#004c80"
+                                  boxShadow="lg"
                                   colorScheme="blue"
                                   icon={<CloseIcon />}
                                   onClick={() => removeFromList(tile.id)}

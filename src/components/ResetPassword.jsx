@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { changePassword } from '../api/auth.api';
 import imgUrl from '../assets/logo_example.png';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import {
   Button,
   Card,
@@ -148,7 +149,7 @@ function ResetPassword() {
                         size="sm"
                         onClick={handleShowOldPassword}
                       >
-                        {showOldPassword ? 'Hide' : 'Show'}
+                        {showOldPassword ? <ViewOffIcon /> : <ViewIcon />}
                       </Button>
                     </InputRightElement>
                   </InputGroup>
@@ -175,7 +176,7 @@ function ResetPassword() {
                         size="sm"
                         onClick={handleShowNewPassword}
                       >
-                        {showNewPassword ? 'Hide' : 'Show'}
+                        {showNewPassword ? <ViewOffIcon /> : <ViewIcon />}
                       </Button>
                     </InputRightElement>
                   </InputGroup>
@@ -187,6 +188,7 @@ function ResetPassword() {
                   _hover={{ bg: '#2c974b' }}
                   _active={{ bg: '#298e46' }}
                   onClick={handleChangePasswordSubmit}
+                  boxShadow="lg"
                 >
                   Reset password
                 </Button>

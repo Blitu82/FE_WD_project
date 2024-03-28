@@ -219,7 +219,9 @@ function Layers() {
                                 isChecked={tile.selected}
                                 onChange={() => toggleTileSelection(tile.id)}
                               >
-                                <Text>{tile.name}</Text>
+                                <Text>
+                                  <b>{tile.name}</b>
+                                </Text>
                               </Checkbox>
                               <Spacer />
                               <Tooltip label="Zoom to feature" fontSize="sm">

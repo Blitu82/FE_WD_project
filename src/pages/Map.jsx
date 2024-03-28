@@ -26,7 +26,6 @@ function Map() {
   } = useContext(MapContext);
 
   const [coords, setCoords] = useState({});
-  console.log(coords);
 
   // Effect to handle opening the Drawer in the Layer component when a tile is selected
   useEffect(() => {
